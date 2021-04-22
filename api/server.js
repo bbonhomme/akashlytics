@@ -3,6 +3,7 @@
 const express = require("express");
 const path = require("path");
 const deployments = require("./data/deployments.json");
+const blockchainAnalyzer = require("./blockchainAnalyzer");
 
 const nodeApi = "http://135.181.60.250:1317/";
 
@@ -57,3 +58,5 @@ app.get('/api/getDeployments/', async function(req, res) {
 app.listen(PORT, () => {
   console.log(`Server listening on the port::${PORT}`);
 });
+
+blockchainAnalyzer.initialize();
