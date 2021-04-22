@@ -9,7 +9,7 @@ const Lease = sequelize.define('Lease', {
     owner: { type: DataTypes.STRING, allowNull: false },
     dseq: { type: DataTypes.STRING, allowNull: false },
     state: { type: DataTypes.STRING, allowNull: false },
-
+    datetime: { type: DataTypes.DATE, allowNull: false }
 }, {
     // Other model options go here
 });
@@ -29,7 +29,8 @@ exports.addLease = async (lease) => {
     await Lease.create({
         owner: lease.lease.lease_id.owner,
         dseq: lease.lease.lease_id.dseq,
-        state: lease.lease.state
+        state: lease.lease.state,
+        datetime: blockHeightToDatetime(lease.lease.created_at)
     });
 }
 
@@ -42,4 +43,13 @@ exports.getActiveLeaseCount = async () => {
             state: { [Op.eq]: "active" }
         }
     });
+}
+
+function blockHeightToDatetime(blockHeight) {
+    const averageBlockTime = 6.174;
+    const firstBlockDate = new Date('2021-03-08 15:00:00 UTC');
+    let blockDate = new Date('2021-03-08 15:00:00 UTC');
+    blockDate.setSeconds(firstBlockDate.getSeconds() + averageBlockTime * (blockHeight-1));
+    
+    return blockDate;
 }
