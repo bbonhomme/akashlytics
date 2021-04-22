@@ -5,7 +5,6 @@ const sequelize = new Sequelize('sqlite::memory:', {
 });
 
 const Lease = sequelize.define('Lease', {
-    // Model attributes are defined here
     owner: { type: DataTypes.STRING, allowNull: false },
     dseq: { type: DataTypes.STRING, allowNull: false },
     state: { type: DataTypes.STRING, allowNull: false },
@@ -15,13 +14,23 @@ const Lease = sequelize.define('Lease', {
 });
 
 const Deployment = sequelize.define('Deployment', {
-    // Model attributes are defined here
     owner: { type: DataTypes.STRING, allowNull: false },
     dseq: { type: DataTypes.STRING, allowNull: false },
     state: { type: DataTypes.STRING, allowNull: false },
     datetime: { type: DataTypes.DATE, allowNull: false }
 }, {
     // Other model options go here
+});
+
+const Bid = sequelize.define('Bid', {
+    owner: { type: DataTypes.STRING, allowNull: false },
+    dseq: { type: DataTypes.STRING, allowNull: false },
+    gseq: { type: DataTypes.NUMBER, allowNull: false },
+    oeq: { type: DataTypes.NUMBER, allowNull: false },
+    provider: { type: DataTypes.STRING, allowNull: false },
+    state: { type: DataTypes.STRING, allowNull: false },
+    price: { type: DataTypes.NUMBER, allowNull: false },
+    datetime: { type: DataTypes.DATE, allowNull: false }
 });
 
 exports.init = async () => {
@@ -34,6 +43,7 @@ exports.init = async () => {
 
     await Lease.sync({ force: true })
     await Deployment.sync({ force: true });
+    await Bid.sync({ force: true });
 }
 
 exports.addLease = async (lease) => {
@@ -52,6 +62,26 @@ exports.addDeployment = async (deployment) => {
         state: deployment.deployment.state,
         datetime: blockHeightToDatetime(deployment.deployment.created_at)
     });
+}
+
+exports.addBid = async (bid) => {
+    await Deployment.create({
+        owner: bid.bid.bid_id.owner,
+        dseq: bid.bid.bid_id.dseq,
+        gseq: bid.bid.bid_id.gseq,
+        oseq: bid.bid.bid_id.oseq,
+        state: bid.bid.state,
+        price: convertPrice(bid.bid.price),
+        datetime: blockHeightToDatetime(bid.bid.created_at)
+    });
+}
+
+function convertPrice(priceObj) {
+    if (priceObj.denom === "uakt") {
+        return parseInt(priceObj.amount);
+    } else {
+        throw "Invalid price denomination"; // TODO: Handle others
+    }
 }
 
 exports.getTotalLeaseCount = async () => {

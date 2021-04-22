@@ -28,6 +28,7 @@ exports.initialize = async () => {
 
         const leases = await loadLeases(node);
         const deployments = await loadDeployments(node);
+        const bids = await loadBids(node);
 
         await dbProvider.init();
 
@@ -39,6 +40,11 @@ exports.initialize = async () => {
         console.log(`Inserting ${deployments.length} deployments into the database`);
         for (const deployment of deployments) {
             await dbProvider.addDeployment(deployment);
+        }
+        
+        console.log(`Inserting ${bids.length} bids into the database`);
+        for (const bid of bids) {
+            await dbProvider.addBid(bid);
         }
 
         activeDeploymentCount = await dbProvider.getActiveDeploymentCount();
@@ -74,7 +80,7 @@ async function loadLeases(node) {
 
 
 async function loadDeployments(node) {
-    const cachePath = cacheFolder + "deployment.json";
+    const cachePath = cacheFolder + "deployments.json";
 
     if (fs.existsSync(cachePath)) {
         data = require(cachePath);
@@ -92,6 +98,27 @@ async function loadDeployments(node) {
     console.log(`Found ${deployments.length} deployments`);
 
     return deployments;
+}
+
+async function loadBids(node) {
+    const cachePath = cacheFolder + "bids.json";
+
+    if (fs.existsSync(cachePath)) {
+        data = require(cachePath);
+        console.log("Loaded bids from cache");
+    } else {
+        const queryUrl = node + "/akash/market/v1beta1/bids/list?pagination.limit=" + paginationLimit;
+        console.log("Querying bids from: " + queryUrl);
+        const response = await fetch(queryUrl);
+        data = await response.json();
+        fs.writeFileSync(cachePath, JSON.stringify(data));
+    }
+
+    const bids = data.bids;
+
+    console.log(`Found ${bids.length} bids`);
+
+    return bids;
 }
 
 function pickRandomElement(arr) {
