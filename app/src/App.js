@@ -6,6 +6,7 @@ import DeploymentList from "./DeploymentList";
 
 function App() {
   const [users, setUsers] = useState([]);
+  const [activeDeploymentCount, setActiveDeploymentCount] = useState(null);
 
   // get the users
   useEffect(() => {
@@ -15,7 +16,17 @@ function App() {
       setUsers(body);
     }
 
+    async function getActiveDeploymentCount() {
+      const res = await fetch("/api/getActiveDeploymentCount");
+      const data = await res.text();
+
+      if (data) {
+        setActiveDeploymentCount(parseInt(data));
+      }
+    }
+
     getData();
+    getActiveDeploymentCount();
   }, []);
 
   return (
@@ -33,7 +44,11 @@ function App() {
         )}
 
         <br />
-        
+
+        {activeDeploymentCount !== null && <p>There is {activeDeploymentCount} active deployments</p>}
+
+        <br />
+
         <DeploymentList />
       </header>
     </div>
