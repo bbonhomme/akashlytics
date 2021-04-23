@@ -40,8 +40,7 @@ function App() {
             <div className="Card">
               <p className="Number"><FormattedNumber value={deploymentCounts.averagePrice / 1000000} /> akt</p>
               <p className="Text">
-                Monthly cost for a small instance <a data-tip data-for="instanceDef"><i class="bi bi-question-circle-fill"></i></a>
-                <br />
+                Monthly cost for a small instance <i class="bi bi-question-circle-fill" data-tip data-for="instanceDef"></i>
                 <ReactTooltip className="tooltip" id='instanceDef' place="bottom" type='error' effect='solid'>
                   Average based on these specs:<br />
                   cpu: 0.1<br />
