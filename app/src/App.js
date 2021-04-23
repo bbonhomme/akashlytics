@@ -5,47 +5,39 @@ import React, { useEffect, useState } from "react";
 import DeploymentList from "./DeploymentList";
 
 function App() {
-  const [users, setUsers] = useState([]);
-  const [activeDeploymentCount, setActiveDeploymentCount] = useState(null);
+  const [deploymentCounts, setDeploymentCounts] = useState(null);
 
   // get the users
   useEffect(() => {
-    async function getData() {
-      const res = await fetch("/api/users");
-      const body = await res.json();
-      setUsers(body);
-    }
-
-    async function getActiveDeploymentCount() {
-      const res = await fetch("/api/getActiveDeploymentCount");
-      const data = await res.text();
+    async function getDeploymentCounts() {
+      const res = await fetch("/api/getDeploymentCounts");
+      const data = await res.json();
 
       if (data) {
-        setActiveDeploymentCount(parseInt(data));
+        setDeploymentCounts(data);
       }
     }
 
-    getData();
-    getActiveDeploymentCount();
+    getDeploymentCounts();
   }, []);
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hey this hosted on Akash!</p>
+        <img src="/akash-network-akt-logo.png" className="Logo" />
 
-        {users.length > 0 && (
-          <ul>
-            {users.map((u) => {
-              return <li key={u.id}>{u.name}</li>;
-            })}
-          </ul>
+        {deploymentCounts !== null && (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div className="Card">
+              <p className="Number">{deploymentCounts.activeDeploymentCount}</p>
+              <p className="Text">Active deployments</p>
+            </div>
+            <div className="Card">
+              <p className="Number">{deploymentCounts.deploymentCount}</p>
+              <p className="Text">Total deployments</p>
+            </div>
+          </div>
         )}
-
-        <br />
-
-        {activeDeploymentCount !== null && <p>There is {activeDeploymentCount} active deployments</p>}
 
         <br />
 
