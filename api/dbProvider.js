@@ -34,7 +34,7 @@ const Bid = sequelize.define('Bid', {
     owner: { type: DataTypes.STRING, allowNull: false },
     dseq: { type: DataTypes.STRING, allowNull: false },
     gseq: { type: DataTypes.NUMBER, allowNull: false },
-    oeq: { type: DataTypes.NUMBER, allowNull: false },
+    oseq: { type: DataTypes.NUMBER, allowNull: false },
     provider: { type: DataTypes.STRING, allowNull: false },
     state: { type: DataTypes.STRING, allowNull: false },
     price: { type: DataTypes.NUMBER, allowNull: false },
@@ -73,11 +73,12 @@ exports.addDeployment = async (deployment) => {
 };
 
 exports.addBid = async (bid) => {
-    await Deployment.create({
+    await Bid.create({
         owner: bid.bid.bid_id.owner,
         dseq: bid.bid.bid_id.dseq,
         gseq: bid.bid.bid_id.gseq,
         oseq: bid.bid.bid_id.oseq,
+        provider: bid.bid.bid_id.provider,
         state: bid.bid.state,
         price: convertPrice(bid.bid.price),
         datetime: blockHeightToDatetime(bid.bid.created_at)
