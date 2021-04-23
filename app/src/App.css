@@ -83,3 +83,7 @@ a:hover {
   color: #00c9c8;
   text-decoration: underline;
 }
+
+.tooltip {
+  font-weight: bold;
+}
