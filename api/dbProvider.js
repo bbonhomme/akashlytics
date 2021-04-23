@@ -197,12 +197,11 @@ function blockHeightToDatetime(blockHeight) {
 exports.getPricingAverage = async () => {
   const activeDeploymentResources = await DeploymentGroupResource.findAll({
     where: {
-      //"$deploymentGroup.owner$": "akash1ngz3pe5dat3xkv306r23kt7y8kns3sfxxtrzlm",
       "$deploymentGroup.deployment.state$": "active",
       "$deploymentGroup.deployment.lease.state$": "active",
       cpuUnits: '100',
-      memoryQuantity: '536870912', // 512Mi
-      storageQuantity: '536870912',// 512Mi
+      memoryQuantity: '536870912',  // 512Mi
+      storageQuantity: '536870912', // 512Mi
       count: 1
     },
     include: {
