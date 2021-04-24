@@ -181,7 +181,14 @@ exports.getActiveDeploymentCount = async () => {
 };
 
 exports.getDeploymentCount = async () => {
-  return await Deployment.count();
+  return await Deployment.count({
+    distinct: true,
+    include:
+    {
+      model: Lease,
+      required: true
+    }
+  });
 };
 
 function blockHeightToDatetime(blockHeight) {

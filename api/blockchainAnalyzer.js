@@ -53,6 +53,7 @@ exports.initialize = async () => {
     deploymentCount = await dbProvider.getDeploymentCount();
     activeDeploymentCount = await dbProvider.getActiveDeploymentCount();
     console.log(`There is ${activeDeploymentCount} active deployments`);
+    console.log(`There was ${deploymentCount} total deployments`);
 
     const averagePriceByBlock = await dbProvider.getPricingAverage();
     console.log(`The average price for a small instance is: ${averagePriceByBlock} uakt / block`);
