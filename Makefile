@@ -8,7 +8,7 @@ AKASH_CHAIN_ID=$(shell curl -s "$(AKASH_NET)/chain-id.txt")
 #AKASH_BIN := akash
 
 # Docker akash installation
-DEPLOY_ROOT := /app
+DEPLOY_ROOT := /repos/akashlytics
 # AKASH_BIN := docker run -it -v $(shell pwd):$(DEPLOY_ROOT) --rm ghcr.io/ovrclk/akash:$(AKASH_VERSION) akash
 AKASH_BIN := akash
 
