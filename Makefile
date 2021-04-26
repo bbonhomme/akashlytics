@@ -12,7 +12,7 @@ DEPLOY_ROOT := /app
 # AKASH_BIN := docker run -it -v $(shell pwd):$(DEPLOY_ROOT) --rm ghcr.io/ovrclk/akash:$(AKASH_VERSION) akash
 AKASH_BIN := akash
 
-KEY_NAME := deploy
+KEY_NAME := baktun
 # KEYRING_OPT := --keyring-backend "file" --home "$(DEPLOY_ROOT)/akash"
 KEYRING_OPT := --keyring-backend "os"
 
