@@ -8,11 +8,13 @@ AKASH_CHAIN_ID=$(shell curl -s "$(AKASH_NET)/chain-id.txt")
 #AKASH_BIN := akash
 
 # Docker akash installation
-DEPLOY_ROOT := /root/deploy
-AKASH_BIN := docker run -it -v $(shell pwd):$(DEPLOY_ROOT) --rm ghcr.io/ovrclk/akash:$(AKASH_VERSION) akash
+DEPLOY_ROOT := /app
+# AKASH_BIN := docker run -it -v $(shell pwd):$(DEPLOY_ROOT) --rm ghcr.io/ovrclk/akash:$(AKASH_VERSION) akash
+AKASH_BI := akash
 
 KEY_NAME := deploy
-KEYRING_OPT := --keyring-backend "file" --home "$(DEPLOY_ROOT)/akash"
+# KEYRING_OPT := --keyring-backend "file" --home "$(DEPLOY_ROOT)/akash"
+KEYRING_OPT := --keyring-backend "os"
 
 FEES := 5000uakt
 
