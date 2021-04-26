@@ -3,12 +3,12 @@ version: "2.0"
 
 services:
   web:
-    image: tombeynon/akash-hello-world:release-v0.1.1
+    image: baktun/akashlytics:latest
     expose:
-      - port: 80
-        as: 80
+      - port: 5001
+        as: 5001
         accept:
-          - akashhw.tombeynon.co.uk
+          - akashlytics.com
         to:
           - global: true
 

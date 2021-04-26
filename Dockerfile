@@ -20,5 +20,10 @@ RUN npm run build
 # If you are building your code for production
 # RUN npm ci --only=production
 
+WORKDIR /app/api
+RUN npm install
+
+RUN npm rebuild
+
 EXPOSE 3080
 CMD [ "node", "/app/api/server.js" ]
