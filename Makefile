@@ -3,6 +3,8 @@ AKASH_VERSION=$(shell curl -s "$(AKASH_NET)/version.txt")
 AKASH_NODE=$(shell curl -s "$(AKASH_NET)/rpc-nodes.txt" | sort -R | head -1)
 AKASH_CHAIN_ID=$(shell curl -s "$(AKASH_NET)/chain-id.txt")
 
+AKASH_SERVICE_NAME="web"
+
 # Local akash installation
 #DEPLOY_ROOT := $(shell pwd)
 #AKASH_BIN := akash
@@ -14,7 +16,7 @@ AKASH_BIN := akash
 
 KEY_NAME := baktun
 # KEYRING_OPT := --keyring-backend "file" --home "$(DEPLOY_ROOT)/akash"
-KEYRING_OPT := --keyring-backend "os"
+KEYRING_OPT := --keyring-backend "os" --home "~/.akash"
 
 FEES := 5000uakt
 
@@ -80,6 +82,9 @@ lease_status:
 
 lease_logs:
 	$(AKASH_BIN) provider lease-logs --node $(AKASH_NODE) --from $(KEY_NAME) --dseq $(DSEQ) --oseq $(OSEQ) --gseq $(GSEQ) --provider $(PROVIDER) ${KEYRING_OPT}
+
+service_logs:
+	$(AKASH_BIN) provider service-logs --owner $(AKASH_ADDRESS) --node $(AKASH_NODE) --from $(KEY_NAME) --dseq $(DSEQ) --oseq $(OSEQ) --gseq $(GSEQ) --provider $(PROVIDER) --service $(AKASH_SERVICE_NAME) ${KEYRING_OPT}
 
 send_manifest:
 	$(AKASH_BIN) provider send-manifest $(DEPLOY_ROOT)/deploy.yml --node $(AKASH_NODE) --dseq $(DSEQ)  --from $(KEY_NAME) --provider $(PROVIDER) $(KEYRING_OPT)
