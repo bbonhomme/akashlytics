@@ -32,7 +32,7 @@ profiles:
       pricing:
         web:
           denom: uakt
-          amount: 1
+          amount: 10
 
 deployment:
   web:
