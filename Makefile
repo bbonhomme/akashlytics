@@ -83,8 +83,17 @@ lease_status:
 lease_logs:
 	$(AKASH_BIN) provider lease-logs --node $(AKASH_NODE) --from $(KEY_NAME) --dseq $(DSEQ) --oseq $(OSEQ) --gseq $(GSEQ) --provider $(PROVIDER) ${KEYRING_OPT}
 
-service_logs:
-	$(AKASH_BIN) provider service-logs --owner $(AKASH_ADDRESS) --node $(AKASH_NODE) --from $(KEY_NAME) --dseq $(DSEQ) --oseq $(OSEQ) --gseq $(GSEQ) --provider $(PROVIDER) --service $(AKASH_SERVICE_NAME) ${KEYRING_OPT}
+lease_events:
+	$(AKASH_BIN) provider lease-events --node $(AKASH_NODE) --from $(KEY_NAME) --dseq $(DSEQ) --oseq $(OSEQ) --gseq $(GSEQ) --provider $(PROVIDER) --service $(AKASH_SERVICE_NAME) ${KEYRING_OPT}
+
+lease_events_trace:
+	$(AKASH_BIN) provider lease-events --node $(AKASH_NODE) --from $(KEY_NAME) --dseq $(DSEQ) --oseq $(OSEQ) --gseq $(GSEQ) --provider $(PROVIDER) --service $(AKASH_SERVICE_NAME) --trace ${KEYRING_OPT}
+
+lease_events_follow:
+	$(AKASH_BIN) provider lease-events --node $(AKASH_NODE) --from $(KEY_NAME) --dseq $(DSEQ) --oseq $(OSEQ) --gseq $(GSEQ) --provider $(PROVIDER) --service $(AKASH_SERVICE_NAME) --follow ${KEYRING_OPT}
+
+lease_events_trace_follow:
+	$(AKASH_BIN) provider lease-events --node $(AKASH_NODE) --from $(KEY_NAME) --dseq $(DSEQ) --oseq $(OSEQ) --gseq $(GSEQ) --provider $(PROVIDER) --service $(AKASH_SERVICE_NAME) --follow ${KEYRING_OPT}
 
 send_manifest:
 	$(AKASH_BIN) provider send-manifest $(DEPLOY_ROOT)/deploy.yml --node $(AKASH_NODE) --dseq $(DSEQ)  --from $(KEY_NAME) --provider $(PROVIDER) $(KEYRING_OPT)
