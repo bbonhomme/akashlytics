@@ -6,7 +6,7 @@ services:
     image: baktun/akashlytics:latest
     expose:
       - port: 5001
-        as: 5001
+        as: 3080
         accept:
           - akashlytics.com
         to:
