@@ -15,8 +15,8 @@ DEPLOY_ROOT := /repos/akashlytics
 AKASH_BIN := akash
 
 KEY_NAME := baktun
-# KEYRING_OPT := --keyring-backend "file" --home "$(DEPLOY_ROOT)/akash"
-KEYRING_OPT := --keyring-backend "os" --home "~/.akash"
+# KEYRING_OPT := --keyring-backend "file" --home "$(DEPLOY_ROOT)/akash" --home "~/.akash"
+KEYRING_OPT := --keyring-backend "os"
 
 FEES := 5000uakt
 

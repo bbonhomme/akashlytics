@@ -5,8 +5,8 @@ services:
   web:
     image: baktun/akashlytics
     expose:
-      - port: 5001
-        as: 3080
+      - port: 3080
+        as: 80
         accept:
           - akashlytics.com
         to:
