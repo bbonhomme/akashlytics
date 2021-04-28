@@ -6,17 +6,53 @@ const { mainNet, averageBlockTime } = require("./constants");
 const currentNet = mainNet;
 
 const cacheFolder = "./cache/";
+const leasesCachePath = cacheFolder + "leases.json";
+const deploymentsCachePath = cacheFolder + "deployments.json";
+const bidsCachePath = cacheFolder + "bids.json";
 const paginationLimit = 5000;
 
 let deploymentCount = null;
 let activeDeploymentCount = null;
 let averagePrice = null;
 
+let lastRefreshDate = null;
+let isLoadingData = false;
+
 exports.getActiveDeploymentCount = () => activeDeploymentCount;
 exports.getDeploymentCount = () => deploymentCount;
 exports.getAveragePrice = () => averagePrice;
 
+exports.refreshData = async () => {
+  const minRefreshInterval = 60 * 1000; // 60secs
+  if (lastRefreshDate && new Date().getTime() - lastRefreshDate.getTime() < minRefreshInterval) {
+    console.warn("Last refresh was too recent, ignoring refresh request.");
+    return false;
+  }
+
+  if (isLoadingData) {
+    console.warn("Data is already being loaded, ignoring refresh request.");
+    return false;
+  }
+
+  lastRefreshDate = new Date();
+
+  console.log("Deleting cache folder");
+  if (fs.existsSync(cacheFolder)) {
+    fs.rmSync(deploymentsCachePath, { force: true });
+    fs.rmSync(leasesCachePath, { force: true });
+    fs.rmSync(bidsCachePath, { force: true });
+    fs.rmdirSync(cacheFolder);
+  }
+
+  await dbProvider.clearDatabase();
+
+  await exports.initialize();
+
+  return true;
+}
+
 exports.initialize = async () => {
+  isLoadingData = true;
   try {
     if (!fs.existsSync(cacheFolder)) {
       fs.mkdirSync(cacheFolder);
@@ -59,21 +95,21 @@ exports.initialize = async () => {
     console.log(`The average price for a small instance is: ${averagePriceByBlock} uakt / block`);
 
     averagePrice = averagePriceByBlock * 31 * 24 * 60 * 60 / averageBlockTime;
-    const roundedPriceAkt = Math.round((averagePrice/1000000 + Number.EPSILON) * 100) / 100;
+    const roundedPriceAkt = Math.round((averagePrice / 1000000 + Number.EPSILON) * 100) / 100;
 
     console.log(`That is ${roundedPriceAkt} AKT / month`);
   } catch (err) {
     console.error("Could not initialize", err);
+  } finally {
+    isLoadingData = false;
   }
 };
 
 async function loadLeases(node) {
-  const cachePath = cacheFolder + "leases.json";
-
   let data = null;
 
-  if (fs.existsSync(cachePath)) {
-    data = require(cachePath);
+  if (fs.existsSync(leasesCachePath)) {
+    data = require(leasesCachePath);
     console.log("Loaded leases from cache");
   } else {
     const queryUrl =
@@ -83,7 +119,7 @@ async function loadLeases(node) {
     console.log("Querying leases from: " + queryUrl);
     const response = await fetch(queryUrl);
     data = await response.json();
-    fs.writeFileSync(cachePath, JSON.stringify(data));
+    fs.writeFileSync(leasesCachePath, JSON.stringify(data));
   }
 
   const leases = data.leases;
@@ -94,10 +130,8 @@ async function loadLeases(node) {
 }
 
 async function loadDeployments(node) {
-  const cachePath = cacheFolder + "deployments.json";
-
-  if (fs.existsSync(cachePath)) {
-    data = require(cachePath);
+  if (fs.existsSync(deploymentsCachePath)) {
+    data = require(deploymentsCachePath);
     console.log("Loaded deployments from cache");
   } else {
     const queryUrl =
@@ -107,7 +141,7 @@ async function loadDeployments(node) {
     console.log("Querying deployments from: " + queryUrl);
     const response = await fetch(queryUrl);
     data = await response.json();
-    fs.writeFileSync(cachePath, JSON.stringify(data));
+    fs.writeFileSync(deploymentsCachePath, JSON.stringify(data));
   }
 
   const deployments = data.deployments;
@@ -118,17 +152,15 @@ async function loadDeployments(node) {
 }
 
 async function loadBids(node) {
-  const cachePath = cacheFolder + "bids.json";
-
-  if (fs.existsSync(cachePath)) {
-    data = require(cachePath);
+  if (fs.existsSync(bidsCachePath)) {
+    data = require(bidsCachePath);
     console.log("Loaded bids from cache");
   } else {
     const queryUrl = node + "/akash/market/v1beta1/bids/list?pagination.limit=" + paginationLimit;
     console.log("Querying bids from: " + queryUrl);
     const response = await fetch(queryUrl);
     data = await response.json();
-    fs.writeFileSync(cachePath, JSON.stringify(data));
+    fs.writeFileSync(bidsCachePath, JSON.stringify(data));
   }
 
   const bids = data.bids;

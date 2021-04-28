@@ -68,6 +68,12 @@ const Bid = sequelize.define('bid', {
   datetime: { type: DataTypes.DATE, allowNull: false }
 });
 
+exports.clearDatabase = async () => {
+  console.log("Cleaning database...");
+  await sequelize.drop();
+  await exports.init();
+}
+
 exports.init = async () => {
   try {
     await sequelize.authenticate();
