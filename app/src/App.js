@@ -1,6 +1,7 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
 import ReactTooltip from "react-tooltip";
+import clsx from 'clsx';
 import { FormattedNumber } from "react-intl";
 
 function App() {
@@ -20,6 +21,8 @@ function App() {
     getDeploymentCounts();
   }, []);
 
+  const showAveragePrice = deploymentCounts && deploymentCounts.averagePrice > 0;
+
   return (
     <div className="App">
       <header className="App-header">
@@ -30,7 +33,7 @@ function App() {
       <div className="container App-body">
         {deploymentCounts !== null && (
           <div className="row">
-            <div className="col-xs-12 col-lg-4">
+            <div className={clsx("col-xs-12", { "col-lg-4": showAveragePrice, "col-lg-6": !showAveragePrice })}>
               <div className="Card">
                 <p className="Number">
                   <FormattedNumber value={deploymentCounts.activeDeploymentCount} />
@@ -39,7 +42,7 @@ function App() {
               </div>
             </div>
 
-            <div className="col-xs-12 col-lg-4">
+            <div className={clsx("col-xs-12", { "col-lg-4": showAveragePrice, "col-lg-6": !showAveragePrice })}>
               <div className="Card">
                 <p className="Number">
                   <FormattedNumber value={deploymentCounts.deploymentCount} />
@@ -48,23 +51,24 @@ function App() {
               </div>
             </div>
 
-            <div className="col-xs-12 col-lg-4">
-              <div className="Card">
-                <p className="Number">
-                  <FormattedNumber value={deploymentCounts.averagePrice / 1000000} /> akt
+            {showAveragePrice && (
+              <div className="col-xs-12 col-lg-4">
+                <div className="Card">
+                  <p className="Number">
+                    <FormattedNumber value={deploymentCounts.averagePrice / 1000000} /> akt
                 </p>
-                <p className="Text">
-                  Monthly cost for a small instance{" "}
-                  <i className="bi bi-question-circle-fill" data-tip data-for="instanceDef"></i>
-                </p>
-                <ReactTooltip
-                  className="tooltip"
-                  id="instanceDef"
-                  place="bottom"
-                  type="error"
-                  effect="solid"
-                >
-                  Average based on these specs:
+                  <p className="Text">
+                    Monthly cost for a small instance{" "}
+                    <i className="bi bi-question-circle-fill" data-tip data-for="instanceDef"></i>
+                  </p>
+                  <ReactTooltip
+                    className="tooltip"
+                    id="instanceDef"
+                    place="bottom"
+                    type="error"
+                    effect="solid"
+                  >
+                    Average based on these specs:
                   <br />
                   cpu: 0.1
                   <br />
@@ -72,8 +76,9 @@ function App() {
                   <br />
                   storage: 512Mi
                 </ReactTooltip>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
       </div>
