@@ -56,22 +56,22 @@ function App() {
                 <p className="Text">
                   Monthly cost for a small instance{" "}
                   <i className="bi bi-question-circle-fill" data-tip data-for="instanceDef"></i>
-                  <ReactTooltip
-                    className="tooltip"
-                    id="instanceDef"
-                    place="bottom"
-                    type="error"
-                    effect="solid"
-                  >
-                    Average based on these specs:
-                    <br />
-                    cpu: 0.1
-                    <br />
-                    memory: 512Mi
-                    <br />
-                    storage: 512Mi
-                  </ReactTooltip>
                 </p>
+                <ReactTooltip
+                  className="tooltip"
+                  id="instanceDef"
+                  place="bottom"
+                  type="error"
+                  effect="solid"
+                >
+                  Average based on these specs:
+                  <br />
+                  cpu: 0.1
+                  <br />
+                  memory: 512Mi
+                  <br />
+                  storage: 512Mi
+                </ReactTooltip>
               </div>
             </div>
           </div>
