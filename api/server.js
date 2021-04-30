@@ -43,6 +43,12 @@ app.get("/api/refreshData", async (req, res) => {
   }
 });
 
+app.get("/api/getDeploymentCountByDate", async (req, res) => {
+  const result = await blockchainAnalyzer.getDeploymentCountByDate();
+
+  res.send(result);
+})
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../app/build/index.html"));
 });

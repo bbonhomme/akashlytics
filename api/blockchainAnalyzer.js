@@ -117,12 +117,17 @@ exports.initialize = async () => {
     const roundedPriceAkt = Math.round((averagePrice / 1000000 + Number.EPSILON) * 100) / 100;
 
     console.log(`That is ${roundedPriceAkt} AKT / month`);
+
   } catch (err) {
     console.error("Could not initialize", err);
   } finally {
     isLoadingData = false;
   }
 };
+
+async function getDeploymentCountByDate() {
+  return await dbProvider.getDeploymentCountByDate();
+}
 
 async function loadLeases(node) {
   let data = null;
