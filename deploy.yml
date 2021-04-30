@@ -8,6 +8,7 @@ services:
       - port: 3080
         as: 80
         accept:
+          - www.akashlytics.com
           - akashlytics.com
         to:
           - global: true
