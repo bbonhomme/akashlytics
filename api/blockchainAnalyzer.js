@@ -21,6 +21,7 @@ let isLoadingData = false;
 exports.getActiveDeploymentCount = () => activeDeploymentCount;
 exports.getDeploymentCount = () => deploymentCount;
 exports.getAveragePrice = () => averagePrice;
+exports.getLastRefreshDate = () => lastRefreshDate;
 
 exports.refreshData = async () => {
   const minRefreshInterval = 60 * 1000; // 60secs
@@ -33,8 +34,6 @@ exports.refreshData = async () => {
     console.warn("Data is already being loaded, ignoring refresh request.");
     return false;
   }
-
-  lastRefreshDate = new Date();
 
   console.log("Deleting cache folder");
   if (fs.existsSync(cacheFolder)) {
@@ -66,6 +65,8 @@ exports.initialize = async () => {
     const leases = await loadLeases(node);
     const deployments = await loadDeployments(node);
     const bids = await loadBids(node);
+
+    lastRefreshDate = new Date();
 
     await dbProvider.init();
 
