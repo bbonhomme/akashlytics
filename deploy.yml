@@ -6,6 +6,7 @@ services:
     image: baktun/akashlytics
     expose:
       - port: 3080
+        proto: https
         as: 443
         accept:
           - www.akashlytics.com
