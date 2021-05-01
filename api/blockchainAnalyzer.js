@@ -10,6 +10,7 @@ const leasesCachePath = cacheFolder + "leases.json";
 const deploymentsCachePath = cacheFolder + "deployments.json";
 const bidsCachePath = cacheFolder + "bids.json";
 const paginationLimit = 5000;
+const autoRefreshInterval = 10 * 60 * 1000; // 10 min
 
 let deploymentCount = null;
 let activeDeploymentCount = null;
@@ -22,6 +23,14 @@ exports.getActiveDeploymentCount = () => activeDeploymentCount;
 exports.getDeploymentCount = () => deploymentCount;
 exports.getAveragePrice = () => averagePrice;
 exports.getLastRefreshDate = () => lastRefreshDate;
+
+exports.startAutoRefresh = () => {
+  console.log(`Will auto-refresh at an interval of ${Math.round(autoRefreshInterval / 1000)} secs`);
+  setInterval(async () => {
+    console.log("Auto-refreshing...");
+    await exports.refreshData();
+  }, autoRefreshInterval);
+}
 
 exports.refreshData = async () => {
   const minRefreshInterval = 60 * 1000; // 60secs

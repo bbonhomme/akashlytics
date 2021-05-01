@@ -44,3 +44,4 @@ app.listen(PORT, () => {
 });
 
 blockchainAnalyzer.initialize();
+blockchainAnalyzer.startAutoRefresh();
