@@ -1,5 +1,6 @@
-const { Sequelize, DataTypes, Op, Deferrable } = require("sequelize");
+const { Sequelize, DataTypes, Op, Deferrable, DATEONLY } = require("sequelize");
 const { averageBlockTime } = require("./constants");
+const baseSnapshots = require("./data/activeDeploymentCountSnapshots.json");
 
 const sequelize = new Sequelize("sqlite::memory:", {
   logging: false,
@@ -19,8 +20,7 @@ const Lease = sequelize.define(
     dseq: { type: DataTypes.STRING, allowNull: false },
     state: { type: DataTypes.STRING, allowNull: false },
     price: { type: DataTypes.NUMBER, allowNull: false },
-    datetime: { type: DataTypes.DATE, allowNull: false },
-    date: { type: DataTypes.DATE, allowNull: false }
+    datetime: { type: DataTypes.DATE, allowNull: false }
   });
 
 const Deployment = sequelize.define(
@@ -45,8 +45,7 @@ const DeploymentGroup = sequelize.define('deploymentGroup', {
   dseq: { type: DataTypes.STRING, allowNull: false },
   gseq: { type: DataTypes.NUMBER, allowNull: false },
   state: { type: DataTypes.STRING, allowNull: false },
-  datetime: { type: DataTypes.DATE, allowNull: false },
-  date: { type: DataTypes.DATE, allowNull: false }
+  datetime: { type: DataTypes.DATE, allowNull: false }
 });
 
 const DeploymentGroupResource = sequelize.define('deploymentGroupResource', {
@@ -69,13 +68,24 @@ const Bid = sequelize.define('bid', {
   provider: { type: DataTypes.STRING, allowNull: false },
   state: { type: DataTypes.STRING, allowNull: false },
   price: { type: DataTypes.NUMBER, allowNull: false },
-  datetime: { type: DataTypes.DATE, allowNull: false },
-  date: { type: DataTypes.DATE, allowNull: false }
+  datetime: { type: DataTypes.DATE, allowNull: false }
+});
+
+const ActiveDeploymentCountSnapshot = sequelize.define('activeDeploymentCountSnapshot', {
+  date: { type: DataTypes.STRING, allowNull: false },
+  min: { type: DataTypes.NUMBER, allowNull: false },
+  max: { type: DataTypes.NUMBER, allowNull: false },
 });
 
 exports.clearDatabase = async () => {
   console.log("Cleaning database...");
-  await sequelize.drop();
+
+  await Bid.drop();
+  await Lease.drop();
+  await DeploymentGroupResource.drop();
+  await DeploymentGroup.drop();
+  await Deployment.drop();
+
   await exports.init();
 }
 
@@ -92,6 +102,7 @@ exports.init = async () => {
   await DeploymentGroup.sync({ force: true });
   await DeploymentGroupResource.sync({ force: true });
   await Bid.sync({ force: true });
+  await ActiveDeploymentCountSnapshot.sync();
 
   Deployment.hasMany(DeploymentGroup);
   DeploymentGroup.belongsTo(Deployment, { foreignKey: "deploymentId" });
@@ -109,8 +120,7 @@ exports.addLease = async (lease) => {
     dseq: lease.lease.lease_id.dseq,
     state: lease.lease.state,
     price: convertPrice(lease.lease.price),
-    datetime: blockHeightToDatetime(lease.lease.created_at),
-    date: blockHeightToDate(lease.lease.created_at)
+    datetime: blockHeightToDatetime(lease.lease.created_at)
   });
 
   createdLease.setDeployment(await Deployment.findOne({
@@ -137,8 +147,7 @@ exports.addDeployment = async (deployment) => {
       dseq: group.group_id.dseq,
       gseq: group.group_id.gseq,
       state: group.state,
-      datetime: blockHeightToDatetime(group.created_at),
-      date: blockHeightToDate(group.created_at)
+      datetime: blockHeightToDatetime(group.created_at)
     });
 
     for (const resource of group.group_spec.resources) {
@@ -162,8 +171,7 @@ exports.addBid = async (bid) => {
     provider: bid.bid.bid_id.provider,
     state: bid.bid.state,
     price: convertPrice(bid.bid.price),
-    datetime: blockHeightToDatetime(bid.bid.created_at),
-    date: blockHeightToDate(bid.bid.created_at)
+    datetime: blockHeightToDatetime(bid.bid.created_at)
   });
 }
 
@@ -207,45 +215,13 @@ exports.getDeploymentCount = async () => {
   });
 };
 
-exports.getDeploymentCountByDate = async () => {
-  const deployments = await Deployment.findAll({
-    attributes: [
-      ['date', 'date'],
-      [sequelize.fn('COUNT'), 'count']
-    ],
-    group: "deployment.date",
-    distinct: true,
-    include: {
-      model: Lease,
-      required: true
-    }
-  });
-
-  return deployments.map(g => g.toJSON()).map(g => ({
-    date: g.date,
-    count: g.count
-  }));
-}
-
 function blockHeightToDatetime(blockHeight) {
   const firstBlockDate = new Date("2021-03-08 15:00:00 UTC");
   let blockDate = new Date("2021-03-08 15:00:00 UTC");
   blockDate.setSeconds(
     firstBlockDate.getSeconds() + averageBlockTime * (blockHeight - 1)
   );
-  
-  blockDate.setHours(0, 0, 0, 0);
 
-  return blockDate;
-}
-
-function blockHeightToDate(blockHeight) {
-  const firstBlockDate = new Date("2021-03-08 15:00:00 UTC");
-  let blockDate = new Date("2021-03-08 15:00:00 UTC");
-  blockDate.setSeconds(
-    firstBlockDate.getSeconds() + averageBlockTime * (blockHeight - 1)
-  );
-  
   blockDate.setHours(0, 0, 0, 0);
 
   return blockDate;
@@ -315,3 +291,50 @@ exports.getTotalResourcesLeased = async () => {
     storageSum: totalResources.map(x => x.storageQuantity * x.count).reduce((a, b) => a + b)
   }
 }
+
+exports.updateDaySnapshot = async (date, dayMinActiveDeploymentCount, dayMaxActiveDeploymentCount) => {
+  const dateStr = date.toISOString().split('T')[0];
+
+  const existingSnapshot = await this.getSnapshot(date);
+  
+  if (existingSnapshot) {
+    await ActiveDeploymentCountSnapshot.update({
+      min: dayMinActiveDeploymentCount,
+      max: dayMaxActiveDeploymentCount
+    }, {
+      where: {
+        date: dateStr
+      }
+    });
+  } else {
+    await ActiveDeploymentCountSnapshot.create({
+      date: dateStr,
+      min: dayMinActiveDeploymentCount,
+      max: dayMaxActiveDeploymentCount
+    });
+  }
+}
+
+exports.getSnapshot = async (date) => {
+  const dateStr = date.toISOString().split('T')[0];
+
+  return await ActiveDeploymentCountSnapshot.findOne({
+    where: {
+      date: dateStr
+    }
+  });
+}
+
+exports.getAllSnapshots = async () => {
+  const results = await ActiveDeploymentCountSnapshot.findAll({
+    attributes: ["date", "min", "max"],
+    order: ["date"]
+  });
+
+  return results.map(x => x.toJSON());
+};
+
+exports.initSnapshotsFromFile = async () => {
+  console.log("Loading " + baseSnapshots.length + " snapshots from file");
+  await ActiveDeploymentCountSnapshot.bulkCreate(baseSnapshots);
+};

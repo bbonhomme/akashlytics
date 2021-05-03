@@ -2,6 +2,7 @@ const fetch = require("node-fetch");
 const dbProvider = require("./dbProvider");
 const fs = require("fs");
 const { mainNet, averageBlockTime } = require("./constants");
+const dataSnapshotsHandler = require("./dataSnapshotsHandler");
 
 const currentNet = mainNet;
 
@@ -63,7 +64,7 @@ exports.refreshData = async () => {
   return true;
 };
 
-exports.initialize = async () => {
+exports.initialize = async (firstInit) => {
   isLoadingData = true;
   try {
     if (!fs.existsSync(cacheFolder)) {
@@ -83,6 +84,10 @@ exports.initialize = async () => {
 
     await dbProvider.init();
 
+    if (firstInit) {
+      await dbProvider.initSnapshotsFromFile();
+    }
+    
     console.log(`Inserting ${deployments.length} deployments into the database`);
     for (const deployment of deployments) {
       await dbProvider.addDeployment(deployment);
@@ -102,6 +107,8 @@ exports.initialize = async () => {
     activeDeploymentCount = await dbProvider.getActiveDeploymentCount();
     console.log(`There is ${activeDeploymentCount} active deployments`);
     console.log(`There was ${deploymentCount} total deployments`);
+    
+    await dataSnapshotsHandler.takeSnapshot(activeDeploymentCount);
 
     totalAKTSpent = await dbProvider.getTotalAKTSpent();
     const roundedAKTSpent = Math.round((totalAKTSpent / 1000000 + Number.EPSILON) * 100) / 100;
@@ -117,17 +124,12 @@ exports.initialize = async () => {
     const roundedPriceAkt = Math.round((averagePrice / 1000000 + Number.EPSILON) * 100) / 100;
 
     console.log(`That is ${roundedPriceAkt} AKT / month`);
-
   } catch (err) {
     console.error("Could not initialize", err);
   } finally {
     isLoadingData = false;
   }
 };
-
-async function getDeploymentCountByDate() {
-  return await dbProvider.getDeploymentCountByDate();
-}
 
 async function loadLeases(node) {
   let data = null;

@@ -4,6 +4,7 @@ const express = require("express");
 const path = require("path");
 const blockchainAnalyzer = require("./blockchainAnalyzer");
 const marketDataProvider = require("./marketDataProvider");
+const dbProvider = require('./dbProvider');
 
 // Constants
 const PORT = 3080;
@@ -47,7 +48,12 @@ app.get("/api/getDeploymentCountByDate", async (req, res) => {
   const result = await blockchainAnalyzer.getDeploymentCountByDate();
 
   res.send(result);
-})
+});
+
+app.get("/api/getAllSnapshots", async (req, res) => {
+  const snapshots = await dbProvider.getAllSnapshots();
+  res.send(snapshots);
+});
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../app/build/index.html"));
@@ -57,6 +63,10 @@ app.listen(PORT, () => {
   console.log(`Server listening on the port::${PORT}`);
 });
 
-blockchainAnalyzer.initialize();
-blockchainAnalyzer.startAutoRefresh();
-marketDataProvider.syncAtInterval();
+async function InitApp(){
+  await blockchainAnalyzer.initialize(true);
+  blockchainAnalyzer.startAutoRefresh();
+  marketDataProvider.syncAtInterval();
+}
+
+InitApp();
