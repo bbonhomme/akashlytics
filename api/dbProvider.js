@@ -331,7 +331,7 @@ exports.getAllSnapshots = async () => {
     order: ["date"]
   });
 
-  return results.map(x => x.toJSON());
+  return results.map(x => x.toJSON()).map(x => ({...x, average: Math.round((x.min+x.max)/2)}));
 };
 
 exports.initSnapshotsFromFile = async () => {

@@ -18,7 +18,7 @@ export default function ActiveDeploymentCountGraph() {
             "color": "rgb(1,0,0)",
             "data": data.map(snapshot => ({
                 x: snapshot.date,
-                y: snapshot.max
+                y: snapshot.average
             }))
         }
     ] : null;
