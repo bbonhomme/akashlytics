@@ -254,7 +254,7 @@ exports.getPricingAverage = async () => {
   const priceSum = activeDeploymentResources.map(x => x.deploymentGroup.deployment.lease.price).reduce((a, b) => a + b);
   const average = priceSum / activeDeploymentResources.length;
 
-  //console.log(data.map(x => x.price + " / " + x.deploymentGroup.deployment.lease.price));
+  //console.log(activeDeploymentResources.map(x => x.price + " / " + x.deploymentGroup.deployment.lease.price));
 
   return average;
 }
