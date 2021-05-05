@@ -76,57 +76,58 @@ function App() {
 
       <div className="container App-body">
         {deploymentCounts !== null ? (
-          <div className="row">
-            <div className={clsx("col-xs-12", tileClassName)}>
-              <div className="Card">
-                <p className="Number">
-                  <FormattedNumber value={deploymentCounts.activeDeploymentCount} />
-                </p>
-                <p className="Text">Active deployments</p>
-              </div>
-            </div>
-
-            {deploymentCounts.marketData && (
+          <>
+            <div className="row">
               <div className={clsx("col-xs-12", tileClassName)}>
                 <div className="Card">
                   <p className="Number">
-                    <FormattedNumber
-                      style="currency"
-                      currency="USD"
-                      value={deploymentCounts.marketData.computedPrice}
-                    />
+                    <FormattedNumber value={deploymentCounts.activeDeploymentCount} />
                   </p>
-                  <p className="Text">Current AKT Price</p>
+                  <p className="Text">Active deployments</p>
                 </div>
               </div>
-            )}
 
-            {showAveragePrice && (
-              <div className={clsx("col-xs-12", tileClassName)}>
-                <div className="Card">
-                  <p className="Number">
-                    <AktAmount
-                      uakt={deploymentCounts.averagePrice}
-                      usdPrice={deploymentCounts.marketData.computedPrice}
-                      showInUSD={true}
-                    />
-                    <small style={{ fontWeight: "bold", fontSize: 16 }}>
-                      | <AktAmount uakt={deploymentCounts.averagePrice} />
-                    </small>
-                  </p>
+              {deploymentCounts.marketData && (
+                <div className={clsx("col-xs-12", tileClassName)}>
+                  <div className="Card">
+                    <p className="Number">
+                      <FormattedNumber
+                        style="currency"
+                        currency="USD"
+                        value={deploymentCounts.marketData.computedPrice}
+                      />
+                    </p>
+                    <p className="Text">Current AKT Price</p>
+                  </div>
+                </div>
+              )}
 
-                  <p className="Text">
-                    Monthly cost for a small instance{" "}
-                    <i className="bi bi-question-circle-fill" data-tip data-for="instanceDef"></i>
-                  </p>
-                  <ReactTooltip
-                    className="tooltip"
-                    id="instanceDef"
-                    place="bottom"
-                    type="error"
-                    effect="solid"
-                  >
-                    Average based on these specs:
+              {showAveragePrice && (
+                <div className={clsx("col-xs-12", tileClassName)}>
+                  <div className="Card">
+                    <p className="Number">
+                      <AktAmount
+                        uakt={deploymentCounts.averagePrice}
+                        usdPrice={deploymentCounts.marketData.computedPrice}
+                        showInUSD={true}
+                      />
+                      <small style={{ fontWeight: "bold", fontSize: 16 }}>
+                        | <AktAmount uakt={deploymentCounts.averagePrice} />
+                      </small>
+                    </p>
+
+                    <p className="Text">
+                      Monthly cost for a small instance{" "}
+                      <i className="bi bi-question-circle-fill" data-tip data-for="instanceDef"></i>
+                    </p>
+                    <ReactTooltip
+                      className="tooltip"
+                      id="instanceDef"
+                      place="bottom"
+                      type="error"
+                      effect="solid"
+                    >
+                      Average based on these specs:
                     <br />
                     cpu: 0.1
                     <br />
@@ -134,46 +135,61 @@ function App() {
                     <br />
                     storage: 512Mi
                   </ReactTooltip>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <div className={clsx("col-xs-12", tileClassName)}>
-              <div className="Card">
-                <p className="Number">
-                  <FormattedNumber value={deploymentCounts.deploymentCount} />
-                </p>
-                <p className="Text">Total deployments</p>
+              <div className={clsx("col-xs-12", tileClassName)}>
+                <div className="Card">
+                  <p className="Number">
+                    <FormattedNumber value={deploymentCounts.deploymentCount} />
+                  </p>
+                  <p className="Text">Total deployments</p>
+                </div>
               </div>
             </div>
 
             {deploymentCounts.totalResourcesLeased && (
-                
-              <div className={clsx("col-xs-12", tileClassName)}>
-                <div className="Card">
-                  <p className="Number">
-                    <FormattedNumber value={deploymentCounts.totalResourcesLeased.cpuSum/1000} />
-                    <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
-                    vCPUs
-                    </small>
-                  </p>
-                  <p className="Number">
-                    <FormattedNumber value={deploymentCounts.totalResourcesLeased.memorySum/1024/1024/1024} />
-                    <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
-                    Go of memory
-                    </small>
-                  </p>
-                  <p className="Number">
-                    <FormattedNumber value={deploymentCounts.totalResourcesLeased.storageSum/1024/1024/1024} />
-                    <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
-                    Go of storage
-                    </small>
-                  </p>
-                <p className="Text">Total resources leased</p>
+              <>
+                <div className="row mt-5">
+                  <div className="col-lg-12">
+                    <h1 style={{ color: "white" }}>Total resources currently leased</h1>
+                  </div>
                 </div>
-              </div>
+                <div className="row">
+                  <div className={clsx("col-xs-12 col-lg-4")}>
+                    <div className="Card">
+                      <p className="Number">
+                        <FormattedNumber value={deploymentCounts.totalResourcesLeased.cpuSum / 1000} />
+                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>vCPUs</small>
+                      </p>
+                      <p className="text">Compute</p>
+                    </div>
+                  </div>
+
+                  <div className={clsx("col-xs-12 col-lg-4")}>
+                    <div className="Card">
+                      <p className="Number">
+                        <FormattedNumber value={deploymentCounts.totalResourcesLeased.memorySum / 1024 / 1024 / 1024} />
+                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>Go</small>
+                      </p>
+                      <p className="Text">Memory</p>
+                    </div>
+                  </div>
+
+                  <div className={clsx("col-xs-12 col-lg-4")}>
+                    <div className="Card">
+                      <p className="Number">
+                        <FormattedNumber value={deploymentCounts.totalResourcesLeased.storageSum / 1024 / 1024 / 1024} />
+                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>Go</small>
+                      </p>
+                      <p className="Text">Storage</p>
+                    </div>
+                  </div>
+                </div>
+              </>
             )}
-          </div>
+          </>
         ) : (
           <CircularProgress size={80} />
         )}
