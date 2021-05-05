@@ -44,7 +44,7 @@ export default function ActiveDeploymentCountGraph() {
         "grid": {
             "line": {
                 "stroke": "#FFFFFF",
-                "strokeWidth": 1
+                "strokeWidth": .5
             }
         }
     };
