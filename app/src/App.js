@@ -146,6 +146,33 @@ function App() {
                 <p className="Text">Total deployments</p>
               </div>
             </div>
+
+            {deploymentCounts.totalResourcesLeased && (
+                
+              <div className={clsx("col-xs-12", tileClassName)}>
+                <div className="Card">
+                  <p className="Number">
+                    <FormattedNumber value={deploymentCounts.totalResourcesLeased.cpuSum/1000} />
+                    <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
+                    vCPUs
+                    </small>
+                  </p>
+                  <p className="Number">
+                    <FormattedNumber value={deploymentCounts.totalResourcesLeased.memorySum/1024/1024/1024} />
+                    <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
+                    Go of memory
+                    </small>
+                  </p>
+                  <p className="Number">
+                    <FormattedNumber value={deploymentCounts.totalResourcesLeased.storageSum/1024/1024/1024} />
+                    <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
+                    Go of storage
+                    </small>
+                  </p>
+                <p className="Text">Total resources leased</p>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <CircularProgress size={80} />
