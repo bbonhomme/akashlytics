@@ -15,6 +15,7 @@ const autoRefreshInterval = 10 * 60 * 1000; // 10 min
 let deploymentCount = null;
 let activeDeploymentCount = null;
 let averagePrice = null;
+let totalAKTSpent = null;
 
 let lastRefreshDate = null;
 let isLoadingData = false;
@@ -23,6 +24,7 @@ exports.getActiveDeploymentCount = () => activeDeploymentCount;
 exports.getDeploymentCount = () => deploymentCount;
 exports.getAveragePrice = () => averagePrice;
 exports.getLastRefreshDate = () => lastRefreshDate;
+exports.getTotalAKTSpent = () => totalAKTSpent;
 
 exports.startAutoRefresh = () => {
   console.log(`Will auto-refresh at an interval of ${Math.round(autoRefreshInterval / 1000)} secs`);
@@ -98,6 +100,10 @@ exports.initialize = async () => {
     activeDeploymentCount = await dbProvider.getActiveDeploymentCount();
     console.log(`There is ${activeDeploymentCount} active deployments`);
     console.log(`There was ${deploymentCount} total deployments`);
+
+    totalAKTSpent = await dbProvider.getTotalAKTSpent();
+    const roundedAKTSpent = Math.round((totalAKTSpent / 1000000 + Number.EPSILON) * 100) / 100;
+    console.log(`There was ${roundedAKTSpent} akt spent on cloud resources`);
 
     const averagePriceByBlock = await dbProvider.getPricingAverage();
     console.log(`The average price for a small instance is: ${averagePriceByBlock} uakt / block`);

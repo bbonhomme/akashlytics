@@ -141,9 +141,9 @@ function App() {
             <div className={clsx("col-xs-12", tileClassName)}>
               <div className="Card">
                 <p className="Number">
-                  <FormattedNumber value={deploymentCounts.deploymentCount} />
+                  <AktAmount uakt={deploymentCounts.totalAKTSpent} maximumFractionDigits={0} />
                 </p>
-                <p className="Text">Total deployments</p>
+                <p className="Text">Total akt spent on decloud</p>
               </div>
             </div>
           </div>

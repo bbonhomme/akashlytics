@@ -13,7 +13,7 @@ export default function AktAmount(props) {
     else {
         return (
             <>
-                <FormattedNumber value={props.uakt / 1000000} /> akt
+                <FormattedNumber value={props.uakt / 1000000} maximumFractionDigits={props.maximumFractionDigits} /> akt
             </>
         );
     }
