@@ -21,12 +21,13 @@ app.get("/api/getDeploymentCounts/", async (req, res) => {
   const activeDeploymentCount = blockchainAnalyzer.getActiveDeploymentCount();
   const deploymentCount = blockchainAnalyzer.getDeploymentCount();
   const averagePrice = blockchainAnalyzer.getAveragePrice();
+  const totalResourcesLeased = blockchainAnalyzer.getTotalResourcesLeased();
   const lastRefreshDate = blockchainAnalyzer.getLastRefreshDate();
   const totalAKTSpent = blockchainAnalyzer.getTotalAKTSpent();
   const marketData = marketDataProvider.getAktMarketData();
 
   if (activeDeploymentCount != null) {
-    res.send({ activeDeploymentCount, deploymentCount, averagePrice, totalAKTSpent,  marketData, lastRefreshDate });
+    res.send({ activeDeploymentCount, deploymentCount, averagePrice, marketData, totalAKTSpent, totalResourcesLeased, lastRefreshDate });
   } else {
     res.send(null);
   }
@@ -40,6 +41,10 @@ app.get("/api/refreshData", async (req, res) => {
   } else {
     res.send("Ignored");
   }
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../app/build/index.html"));
 });
 
 app.listen(PORT, () => {

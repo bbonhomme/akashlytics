@@ -16,6 +16,7 @@ let deploymentCount = null;
 let activeDeploymentCount = null;
 let averagePrice = null;
 let totalAKTSpent = null;
+let totalResourcesLeased = null;
 
 let lastRefreshDate = null;
 let isLoadingData = false;
@@ -23,6 +24,7 @@ let isLoadingData = false;
 exports.getActiveDeploymentCount = () => activeDeploymentCount;
 exports.getDeploymentCount = () => deploymentCount;
 exports.getAveragePrice = () => averagePrice;
+exports.getTotalResourcesLeased = () => totalResourcesLeased;
 exports.getLastRefreshDate = () => lastRefreshDate;
 exports.getTotalAKTSpent = () => totalAKTSpent;
 
@@ -104,6 +106,9 @@ exports.initialize = async () => {
     totalAKTSpent = await dbProvider.getTotalAKTSpent();
     const roundedAKTSpent = Math.round((totalAKTSpent / 1000000 + Number.EPSILON) * 100) / 100;
     console.log(`There was ${roundedAKTSpent} akt spent on cloud resources`);
+    
+    totalResourcesLeased = await dbProvider.getTotalResourcesLeased();
+    console.log(`Total resources leased: ${totalResourcesLeased.cpuSum} cpu / ${totalResourcesLeased.memorySum} memory / ${totalResourcesLeased.storageSum} storage`);
 
     const averagePriceByBlock = await dbProvider.getPricingAverage();
     console.log(`The average price for a small instance is: ${averagePriceByBlock} uakt / block`);

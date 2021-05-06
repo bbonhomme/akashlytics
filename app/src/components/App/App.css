@@ -12,6 +12,15 @@
   }
 }
 
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .App-header {
   height: 60px;
   display: flex;
@@ -32,17 +41,8 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .App-body {
-  padding-top: 100px;
+  padding-top: 80px;
   padding-bottom: 100px;
 }
 
@@ -91,7 +91,7 @@
 }
 
 a {
-  color: #00c9c8;
+  color: white;
   text-decoration: none;
 }
 
@@ -100,8 +100,8 @@ a {
 }
 
 a:hover {
-  color: #00c9c8;
-  text-decoration: underline;
+  color: white;
+  text-decoration: none;
 }
 
 .tooltip {
@@ -143,7 +143,7 @@ a:hover {
 @media (max-width: 991px) {
   .App-body {
     padding-top: 25px;
-    padding-bottom: 30px;
+    padding-bottom: 50px;
   }
 
   .Card {
