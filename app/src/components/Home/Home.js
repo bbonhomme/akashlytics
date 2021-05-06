@@ -171,7 +171,7 @@ export function Home({ deploymentCounts }) {
                           }
                         />
                         <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
-                          Go
+                          Gi
                         </small>
                       </p>
                       <p className="Text">Memory</p>
@@ -187,7 +187,7 @@ export function Home({ deploymentCounts }) {
                           }
                         />
                         <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
-                          Go
+                          Gi
                         </small>
                       </p>
                       <p className="Text">Storage</p>
