@@ -238,3 +238,32 @@ exports.getPricingAverage = async () => {
 
   return average;
 }
+
+
+exports.getTotalResourcesLeased = async () => {
+  const totalResources = await DeploymentGroupResource.findAll({
+    attributes: [
+      "count", "cpuUnits", "memoryQuantity", "storageQuantity"
+    ],
+    where: {
+      "$deploymentGroup.deployment.state$": "active",
+      "$deploymentGroup.deployment.lease.state$": "active"
+    },
+    include: {
+      model: DeploymentGroup,
+      include: {
+        model: Deployment,
+        include: {
+          model: Lease,
+          required: true
+        }
+      }
+    }
+  });
+
+  return {
+    cpuSum: totalResources.map(x => x.cpuUnits * x.count).reduce((a, b) => a + b),
+    memorySum: totalResources.map(x => x.memoryQuantity * x.count).reduce((a, b) => a + b),
+    storageSum: totalResources.map(x => x.storageQuantity * x.count).reduce((a, b) => a + b)
+  }
+}

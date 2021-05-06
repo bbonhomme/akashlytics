@@ -15,6 +15,7 @@ const autoRefreshInterval = 10 * 60 * 1000; // 10 min
 let deploymentCount = null;
 let activeDeploymentCount = null;
 let averagePrice = null;
+let totalResourcesLeased = null;
 
 let lastRefreshDate = null;
 let isLoadingData = false;
@@ -22,6 +23,7 @@ let isLoadingData = false;
 exports.getActiveDeploymentCount = () => activeDeploymentCount;
 exports.getDeploymentCount = () => deploymentCount;
 exports.getAveragePrice = () => averagePrice;
+exports.getTotalResourcesLeased = () => totalResourcesLeased;
 exports.getLastRefreshDate = () => lastRefreshDate;
 
 exports.startAutoRefresh = () => {
@@ -98,6 +100,9 @@ exports.initialize = async () => {
     activeDeploymentCount = await dbProvider.getActiveDeploymentCount();
     console.log(`There is ${activeDeploymentCount} active deployments`);
     console.log(`There was ${deploymentCount} total deployments`);
+
+    totalResourcesLeased = await dbProvider.getTotalResourcesLeased();
+    console.log(`Total resources leased: ${totalResourcesLeased.cpuSum} cpu / ${totalResourcesLeased.memorySum} memory / ${totalResourcesLeased.storageSum} storage`);
 
     const averagePriceByBlock = await dbProvider.getPricingAverage();
     console.log(`The average price for a small instance is: ${averagePriceByBlock} uakt / block`);
