@@ -12,6 +12,9 @@ import { BrowserRouter as Router } from "react-router-dom";
 const theme = createMuiTheme({
   palette: {
     type: "dark",
+    primary: {
+      main:  "#e41e13"
+    }
   },
   typography: {
     fontFamily: [
@@ -28,8 +31,6 @@ const theme = createMuiTheme({
     ].join(","),
   },
 });
-
-theme.palette.primary.main = "#e41e13";
 
 ReactDOM.render(
   <React.StrictMode>

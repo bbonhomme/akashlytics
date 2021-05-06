@@ -2,9 +2,24 @@ import React from "react";
 import ReactTooltip from "react-tooltip";
 import clsx from "clsx";
 import { FormattedNumber } from "react-intl";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { makeStyles } from "@material-ui/core/styles";
+import { CircularProgress, Typography } from "@material-ui/core";
+import { useMediaQueryContext } from "../../context/MediaQueryProvider";
+
+const useStyles = makeStyles((theme) => ({
+  title: {
+    color: "white",
+    fontWeight: "lighter",
+    fontSize: "2rem",
+    paddingBottom: "1rem",
+    textAlign: "left",
+    borderBottom: "1px solid rgba(255,255,255,0.1)",
+  },
+}));
 
 export function Home({ deploymentCounts }) {
+  const classes = useStyles();
+  const mediaQuery = useMediaQueryContext();
   const showAktPrice = deploymentCounts && deploymentCounts.marketData;
   const showAveragePrice =
     deploymentCounts && deploymentCounts.marketData && deploymentCounts.averagePrice > 0;
@@ -21,9 +36,19 @@ export function Home({ deploymentCounts }) {
     <div className="container App-body">
       {deploymentCounts !== null ? (
         <>
-          <div className="row mb-4">
-            <div className="col-lg-12">
-              <h1 style={{ color: "white" }}>Network summary</h1>
+          <div
+            className={clsx("row", {
+              "mb-4": !mediaQuery.smallScreen,
+              "mb-2 text-center": mediaQuery.smallScreen,
+            })}
+          >
+            <div className="col-xs-12">
+              <Typography
+                variant="h1"
+                className={clsx(classes.title, { "text-center": mediaQuery.smallScreen })}
+              >
+                Network summary
+              </Typography>
             </div>
           </div>
 
@@ -70,7 +95,7 @@ export function Home({ deploymentCounts }) {
                       }}
                     >
                       (.432akt)
-                  </small>
+                    </small>
                   </p>
 
                   <p className="Text">
@@ -85,13 +110,13 @@ export function Home({ deploymentCounts }) {
                     effect="solid"
                   >
                     Average based on these specs:
-                  <br />
-                  cpu: 0.1
-                  <br />
-                  memory: 512Mi
-                  <br />
-                  storage: 512Mi
-                </ReactTooltip>
+                    <br />
+                    cpu: 0.1
+                    <br />
+                    memory: 512Mi
+                    <br />
+                    storage: 512Mi
+                  </ReactTooltip>
                 </div>
               </div>
             )}
@@ -107,17 +132,31 @@ export function Home({ deploymentCounts }) {
 
             {deploymentCounts.totalResourcesLeased && (
               <>
-                <div className="row mt-5 mb-4">
-                  <div className="col-lg-12">
-                    <h1 style={{ color: "white" }}>Total resources currently leased</h1>
+                <div
+                  className={clsx("row mt-5", {
+                    "mb-4": !mediaQuery.smallScreen,
+                    "mb-2 text-center": mediaQuery.smallScreen,
+                  })}
+                >
+                  <div className="col-xs-12">
+                    <Typography
+                      variant="h1"
+                      className={clsx(classes.title, { "text-center": mediaQuery.smallScreen })}
+                    >
+                      Total resources currently leased
+                    </Typography>
                   </div>
                 </div>
                 <div className="row">
                   <div className={clsx("col-xs-12 col-lg-4")}>
                     <div className="Card">
                       <p className="Number">
-                        <FormattedNumber value={deploymentCounts.totalResourcesLeased.cpuSum / 1000} />
-                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>vCPUs</small>
+                        <FormattedNumber
+                          value={deploymentCounts.totalResourcesLeased.cpuSum / 1000}
+                        />
+                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
+                          vCPUs
+                        </small>
                       </p>
                       <p className="text">Compute</p>
                     </div>
@@ -126,8 +165,14 @@ export function Home({ deploymentCounts }) {
                   <div className={clsx("col-xs-12 col-lg-4")}>
                     <div className="Card">
                       <p className="Number">
-                        <FormattedNumber value={deploymentCounts.totalResourcesLeased.memorySum / 1024 / 1024 / 1024} />
-                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>Go</small>
+                        <FormattedNumber
+                          value={
+                            deploymentCounts.totalResourcesLeased.memorySum / 1024 / 1024 / 1024
+                          }
+                        />
+                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
+                          Go
+                        </small>
                       </p>
                       <p className="Text">Memory</p>
                     </div>
@@ -136,8 +181,14 @@ export function Home({ deploymentCounts }) {
                   <div className={clsx("col-xs-12 col-lg-4")}>
                     <div className="Card">
                       <p className="Number">
-                        <FormattedNumber value={deploymentCounts.totalResourcesLeased.storageSum / 1024 / 1024 / 1024} />
-                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>Go</small>
+                        <FormattedNumber
+                          value={
+                            deploymentCounts.totalResourcesLeased.storageSum / 1024 / 1024 / 1024
+                          }
+                        />
+                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
+                          Go
+                        </small>
                       </p>
                       <p className="Text">Storage</p>
                     </div>
