@@ -6,12 +6,15 @@ import reportWebVitals from "./reportWebVitals";
 import { IntlProvider } from "react-intl";
 import { SnackbarProvider } from "notistack";
 import MediaQueryProvider from "./context/MediaQueryProvider";
-import { createMuiTheme, makeStyles, ThemeProvider } from "@material-ui/core/styles";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const theme = createMuiTheme({
   palette: {
     type: "dark",
+    primary: {
+      main:  "#e41e13"
+    }
   },
   typography: {
     fontFamily: [
