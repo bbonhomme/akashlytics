@@ -29,6 +29,7 @@ const Deployment = sequelize.define(
     owner: { type: DataTypes.STRING, allowNull: false },
     dseq: { type: DataTypes.STRING, allowNull: false },
     state: { type: DataTypes.STRING, allowNull: false },
+    escrowAccountTransferredAmount: { type: DataTypes.NUMBER, allowNull: false },
     datetime: { type: DataTypes.DATE, allowNull: false }
   });
 
@@ -120,6 +121,7 @@ exports.addDeployment = async (deployment) => {
     owner: deployment.deployment.deployment_id.owner,
     dseq: deployment.deployment.deployment_id.dseq,
     state: deployment.deployment.state,
+    escrowAccountTransferredAmount: deployment.escrow_account.transferred.amount,
     datetime: blockHeightToDatetime(deployment.deployment.created_at),
   });
 
@@ -239,6 +241,10 @@ exports.getPricingAverage = async () => {
   return average;
 }
 
+exports.getTotalAKTSpent = async () => {
+  const total = await Deployment.sum("escrowAccountTransferredAmount");
+  return total;
+}
 
 exports.getTotalResourcesLeased = async () => {
   const totalResources = await DeploymentGroupResource.findAll({
