@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "left",
     borderBottom: "1px solid rgba(255,255,255,0.1)",
   },
+  tooltip: {
+    maxWidth: 300,
+  },
 }));
 
 export function Home({ deploymentCounts }) {
@@ -115,7 +118,11 @@ export function Home({ deploymentCounts }) {
             <div className={clsx("col-xs-12", tileClassName)}>
               <div className="Card">
                 <p className="Number">
-                  <FormattedNumber value={deploymentCounts.totalAKTSpent / 1000000} maximumFractionDigits={0} /> akt
+                  <FormattedNumber
+                    value={deploymentCounts.totalAKTSpent / 1000000}
+                    maximumFractionDigits={0}
+                  />{" "}
+                  akt
                 </p>
                 <p className="Text">Total spent on decloud</p>
               </div>
@@ -126,17 +133,25 @@ export function Home({ deploymentCounts }) {
                 <p className="Number">
                   <FormattedNumber value={deploymentCounts.deploymentCount} />
                 </p>
-                <p className="Text">All-time deployment count&nbsp;<i className="bi bi-question-circle-fill" data-tip data-for="totalDeploymentsInfo"></i>
-                    </p>
-                  <ReactTooltip
-                    className="tooltip"
-                    id="totalDeploymentsInfo"
-                    place="bottom"
-                    type="error"
-                    effect="solid"
-                  >
-                    The all-time deployment count consists of all deployments that were live at some point. This includes deployments that were deployed for testing or that were meant to be only temporary.
-                  </ReactTooltip>
+                <p className="Text">
+                  All-time deployment count&nbsp;
+                  <i
+                    className="bi bi-question-circle-fill"
+                    data-tip
+                    data-for="totalDeploymentsInfo"
+                  ></i>
+                </p>
+                <ReactTooltip
+                  className={clsx("tooltip", classes.tooltip)}
+                  id="totalDeploymentsInfo"
+                  place="bottom"
+                  type="error"
+                  effect="solid"
+                >
+                  The all-time deployment count consists of all deployments that were live at some
+                  point. This includes deployments that were deployed for testing or that were meant
+                  to be only temporary.
+                </ReactTooltip>
               </div>
             </div>
           </div>
@@ -155,7 +170,7 @@ export function Home({ deploymentCounts }) {
                     className={clsx(classes.title, { "text-center": mediaQuery.smallScreen })}
                   >
                     Total resources currently leased
-                    </Typography>
+                  </Typography>
                 </div>
               </div>
               <div className="row">
@@ -178,7 +193,7 @@ export function Home({ deploymentCounts }) {
                       />
                       <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
                         vCPUs
-                        </small>
+                      </small>
                     </p>
                     <p className="Text">Compute</p>
                   </div>
@@ -188,13 +203,11 @@ export function Home({ deploymentCounts }) {
                   <div className="Card">
                     <p className="Number">
                       <FormattedNumber
-                        value={
-                          deploymentCounts.totalResourcesLeased.memorySum / 1024 / 1024 / 1024
-                        }
+                        value={deploymentCounts.totalResourcesLeased.memorySum / 1024 / 1024 / 1024}
                       />
                       <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
                         Gi
-                        </small>
+                      </small>
                     </p>
                     <p className="Text">Memory</p>
                   </div>
@@ -210,7 +223,7 @@ export function Home({ deploymentCounts }) {
                       />
                       <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
                         Gi
-                        </small>
+                      </small>
                     </p>
                     <p className="Text">Storage</p>
                   </div>
