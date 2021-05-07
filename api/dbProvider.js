@@ -31,8 +31,7 @@ const Deployment = sequelize.define(
     dseq: { type: DataTypes.STRING, allowNull: false },
     state: { type: DataTypes.STRING, allowNull: false },
     escrowAccountTransferredAmount: { type: DataTypes.NUMBER, allowNull: false },
-    datetime: { type: DataTypes.DATE, allowNull: false },
-    date: { type: DataTypes.DATE, allowNull: false }
+    datetime: { type: DataTypes.DATE, allowNull: false }
   });
 
 const DeploymentGroup = sequelize.define('deploymentGroup', {
@@ -137,8 +136,7 @@ exports.addDeployment = async (deployment) => {
     dseq: deployment.deployment.deployment_id.dseq,
     state: deployment.deployment.state,
     escrowAccountTransferredAmount: deployment.escrow_account.transferred.amount,
-    datetime: blockHeightToDatetime(deployment.deployment.created_at),
-    date: blockHeightToDate(deployment.deployment.created_at)
+    datetime: blockHeightToDatetime(deployment.deployment.created_at)
   });
 
   for (const group of deployment.groups) {
