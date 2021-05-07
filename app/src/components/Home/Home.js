@@ -53,15 +53,6 @@ export function Home({ deploymentCounts }) {
           </div>
 
           <div className="row">
-            <div className={clsx("col-xs-12", tileClassName)}>
-              <div className="Card">
-                <p className="Number">
-                  <FormattedNumber value={deploymentCounts.activeDeploymentCount} />
-                </p>
-                <p className="Text">Active deployments</p>
-              </div>
-            </div>
-
             {deploymentCounts.marketData && (
               <div className={clsx("col-xs-12", tileClassName)}>
                 <div className="Card">
@@ -124,79 +115,109 @@ export function Home({ deploymentCounts }) {
             <div className={clsx("col-xs-12", tileClassName)}>
               <div className="Card">
                 <p className="Number">
-                  <FormattedNumber value={deploymentCounts.deploymentCount} />
+                  <FormattedNumber value={deploymentCounts.totalAKTSpent / 1000000} maximumFractionDigits={0} /> akt
                 </p>
-                <p className="Text">Total deployments</p>
+                <p className="Text">Total spent on decloud</p>
               </div>
             </div>
 
-            {deploymentCounts.totalResourcesLeased && (
-              <>
-                <div
-                  className={clsx("row mt-5", {
-                    "mb-4": !mediaQuery.smallScreen,
-                    "mb-2 text-center": mediaQuery.smallScreen,
-                  })}
-                >
-                  <div className="col-xs-12">
-                    <Typography
-                      variant="h1"
-                      className={clsx(classes.title, { "text-center": mediaQuery.smallScreen })}
-                    >
-                      Total resources currently leased
-                    </Typography>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className={clsx("col-xs-12 col-lg-4")}>
-                    <div className="Card">
-                      <p className="Number">
-                        <FormattedNumber
-                          value={deploymentCounts.totalResourcesLeased.cpuSum / 1000}
-                        />
-                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
-                          vCPUs
-                        </small>
-                      </p>
-                      <p className="text">Compute</p>
-                    </div>
-                  </div>
-
-                  <div className={clsx("col-xs-12 col-lg-4")}>
-                    <div className="Card">
-                      <p className="Number">
-                        <FormattedNumber
-                          value={
-                            deploymentCounts.totalResourcesLeased.memorySum / 1024 / 1024 / 1024
-                          }
-                        />
-                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
-                          Gi
-                        </small>
-                      </p>
-                      <p className="Text">Memory</p>
-                    </div>
-                  </div>
-
-                  <div className={clsx("col-xs-12 col-lg-4")}>
-                    <div className="Card">
-                      <p className="Number">
-                        <FormattedNumber
-                          value={
-                            deploymentCounts.totalResourcesLeased.storageSum / 1024 / 1024 / 1024
-                          }
-                        />
-                        <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
-                          Gi
-                        </small>
-                      </p>
-                      <p className="Text">Storage</p>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
+            <div className={clsx("col-xs-12", tileClassName)}>
+              <div className="Card">
+                <p className="Number">
+                  <FormattedNumber value={deploymentCounts.deploymentCount} />
+                </p>
+                <p className="Text">All-time deployment count&nbsp;<i className="bi bi-question-circle-fill" data-tip data-for="totalDeploymentsInfo"></i>
+                    </p>
+                  <ReactTooltip
+                    className="tooltip"
+                    id="totalDeploymentsInfo"
+                    place="bottom"
+                    type="error"
+                    effect="solid"
+                  >
+                    The all-time deployment count consists of all deployments that were live at some point. This includes deployments that were deployed for testing or that were meant to be only temporary.
+                  </ReactTooltip>
+              </div>
+            </div>
           </div>
+
+          {deploymentCounts.totalResourcesLeased && (
+            <>
+              <div
+                className={clsx("row mt-5", {
+                  "mb-4": !mediaQuery.smallScreen,
+                  "mb-2 text-center": mediaQuery.smallScreen,
+                })}
+              >
+                <div className="col-xs-12">
+                  <Typography
+                    variant="h1"
+                    className={clsx(classes.title, { "text-center": mediaQuery.smallScreen })}
+                  >
+                    Total resources currently leased
+                    </Typography>
+                </div>
+              </div>
+              <div className="row">
+                {deploymentCounts.activeDeploymentCount && (
+                  <div className={clsx("col-xs-12 col-lg-3")}>
+                    <div className="Card">
+                      <p className="Number">
+                        <FormattedNumber value={deploymentCounts.activeDeploymentCount} />
+                      </p>
+                      <p className="Text">Active deployments</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className={clsx("col-xs-12 col-lg-3")}>
+                  <div className="Card">
+                    <p className="Number">
+                      <FormattedNumber
+                        value={deploymentCounts.totalResourcesLeased.cpuSum / 1000}
+                      />
+                      <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
+                        vCPUs
+                        </small>
+                    </p>
+                    <p className="Text">Compute</p>
+                  </div>
+                </div>
+
+                <div className={clsx("col-xs-12 col-lg-3")}>
+                  <div className="Card">
+                    <p className="Number">
+                      <FormattedNumber
+                        value={
+                          deploymentCounts.totalResourcesLeased.memorySum / 1024 / 1024 / 1024
+                        }
+                      />
+                      <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
+                        Gi
+                        </small>
+                    </p>
+                    <p className="Text">Memory</p>
+                  </div>
+                </div>
+
+                <div className={clsx("col-xs-12 col-lg-3")}>
+                  <div className="Card">
+                    <p className="Number">
+                      <FormattedNumber
+                        value={
+                          deploymentCounts.totalResourcesLeased.storageSum / 1024 / 1024 / 1024
+                        }
+                      />
+                      <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
+                        Gi
+                        </small>
+                    </p>
+                    <p className="Text">Storage</p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
         </>
       ) : (
         <CircularProgress size={80} />
