@@ -5,6 +5,7 @@ import { FormattedNumber } from "react-intl";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress, Typography } from "@material-ui/core";
 import { useMediaQueryContext } from "../../context/MediaQueryProvider";
+import ActiveDeploymentCountGraph from "../ActiveDeploymentCountGraph/ActiveDeploymentCountGraph";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -230,6 +231,14 @@ export function Home({ deploymentCounts }) {
                 </div>
               </div>
             </>
+          )}
+
+          {deploymentCounts.snapshots && deploymentCounts.snapshots.length > 0 && (
+            <div className="row justify-content-md-center mt-3">
+              <div className="col-lg-9">
+                <ActiveDeploymentCountGraph data={deploymentCounts.snapshots} />
+              </div>
+            </div>
           )}
         </>
       ) : (

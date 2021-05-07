@@ -2,21 +2,12 @@ import React, { useEffect, useState } from "react";
 import { ResponsiveLine } from '@nivo/line'
 import { FormattedDate } from "react-intl";
 
-export default function ActiveDeploymentCountGraph() {
-    const [data, setData] = useState(null);
-
-    useEffect(async () => {
-        const response = await fetch("/api/getAllSnapshots");
-        const data = await response.json();
-
-        setData(data);
-    }, []);
-
-    const graphData = data ? [
+export default function ActiveDeploymentCountGraph(props) {
+    const graphData = props.data ? [
         {
             "id": "activeDeploymentCount",
             "color": "rgb(1,0,0)",
-            "data": data.map(snapshot => ({
+            "data": props.data.map(snapshot => ({
                 x: snapshot.date,
                 y: snapshot.average
             }))
@@ -24,7 +15,6 @@ export default function ActiveDeploymentCountGraph() {
     ] : null;
 
     const theme = {
-        "background": "#282c34",
         "textColor": "#FFFFFF",
         "fontSize": 14,
         "axis": {
@@ -49,12 +39,12 @@ export default function ActiveDeploymentCountGraph() {
         }
     };
 
-    const maxValue =  data && data.map(x => x.max).reduce((a, b) => a > b ? a : b);
+    const maxValue =  props.data && props.data.map(x => x.max).reduce((a, b) => a > b ? a : b);
 
     return (
 
         <div style={{ height: "400px" }}>
-            {data && (
+            {props.data && (
                 <ResponsiveLine
                     theme={theme}
                     data={graphData}

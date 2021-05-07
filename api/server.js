@@ -25,10 +25,11 @@ app.get("/api/getDeploymentCounts/", async (req, res) => {
   const totalResourcesLeased = blockchainAnalyzer.getTotalResourcesLeased();
   const lastRefreshDate = blockchainAnalyzer.getLastRefreshDate();
   const totalAKTSpent = blockchainAnalyzer.getTotalAKTSpent();
+  const snapshots = blockchainAnalyzer.getSnapshots();
   const marketData = marketDataProvider.getAktMarketData();
 
   if (activeDeploymentCount != null) {
-    res.send({ activeDeploymentCount, deploymentCount, averagePrice, marketData, totalAKTSpent, totalResourcesLeased, lastRefreshDate });
+    res.send({ activeDeploymentCount, deploymentCount, averagePrice, marketData, totalAKTSpent, totalResourcesLeased, snapshots, lastRefreshDate });
   } else {
     res.send(null);
   }
@@ -42,17 +43,6 @@ app.get("/api/refreshData", async (req, res) => {
   } else {
     res.send("Ignored");
   }
-});
-
-app.get("/api/getDeploymentCountByDate", async (req, res) => {
-  const result = await blockchainAnalyzer.getDeploymentCountByDate();
-
-  res.send(result);
-});
-
-app.get("/api/getAllSnapshots", async (req, res) => {
-  const snapshots = await dbProvider.getAllSnapshots();
-  res.send(snapshots);
 });
 
 app.get("*", (req, res) => {
