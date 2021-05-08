@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress, Typography } from "@material-ui/core";
 import { useMediaQueryContext } from "../../context/MediaQueryProvider";
 import ActiveDeploymentCountGraph from "../ActiveDeploymentCountGraph/ActiveDeploymentCountGraph";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -254,7 +254,7 @@ export function Home({ deploymentCounts }) {
                   </div>
                 </div>
                 <div className="row justify-content-md-center">
-                  <div className="col-lg-6">
+                  <div className="col-lg-12">
                     <ActiveDeploymentCountGraph data={deploymentCounts.snapshots} />
                   </div>
                 </div>

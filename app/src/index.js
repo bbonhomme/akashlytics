@@ -8,12 +8,13 @@ import { SnackbarProvider } from "notistack";
 import MediaQueryProvider from "./context/MediaQueryProvider";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
 import { BrowserRouter as Router } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 
 const theme = createMuiTheme({
   palette: {
     type: "dark",
     primary: {
-      main:  "#e41e13"
+      main: "#e41e13"
     }
   },
   typography: {
@@ -36,13 +37,15 @@ ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <IntlProvider locale={navigator.language}>
-        <SnackbarProvider maxSnack={3} dense hideIconVariant>
-          <MediaQueryProvider>
-            <Router>
-              <App />
-            </Router>
-          </MediaQueryProvider>
-        </SnackbarProvider>
+        <HelmetProvider>
+          <SnackbarProvider maxSnack={3} dense hideIconVariant>
+            <MediaQueryProvider>
+              <Router>
+                <App />
+              </Router>
+            </MediaQueryProvider>
+          </SnackbarProvider>
+        </HelmetProvider>
       </IntlProvider>
     </ThemeProvider>
   </React.StrictMode>,

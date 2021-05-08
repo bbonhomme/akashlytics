@@ -14,7 +14,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import { FormattedNumber, useIntl } from "react-intl";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 const useStyles = makeStyles((theme) => ({
   root: {

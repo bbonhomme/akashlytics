@@ -144,9 +144,6 @@ a:hover {
   padding: 5px;
   color: white;
   font-weight: bold;
-  /* background-color: #282c34;
-  border-radius: 10px;
-  border:solid 2px white; */
 }
 
 @media (max-width: 991px) {

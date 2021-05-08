@@ -333,12 +333,13 @@ exports.getSnapshot = async (date) => {
 exports.getActiveDeploymentSnapshots = async () => {
   const results = await StatsSnapshot.findAll({
     attributes: ["date", "minActiveDeploymentCount", "maxActiveDeploymentCount"],
-    order: ["date"],
+    order: [["date", "DESC"]],
     where: {
       date: {
         [Op.not]: dataSnapshotsHandler.getDayStr()
       }
-    }
+    },
+    limit: 10
   });
 
   return results.map(x => x.toJSON()).map(x => ({
@@ -346,7 +347,7 @@ exports.getActiveDeploymentSnapshots = async () => {
     min: x.minActiveDeploymentCount,
     max: x.maxActiveDeploymentCount,
     average: Math.round((x.minActiveDeploymentCount + x.maxActiveDeploymentCount) / 2)
-  }));
+  })).reverse();
 };
 
 exports.getAllSnapshots = async () => {

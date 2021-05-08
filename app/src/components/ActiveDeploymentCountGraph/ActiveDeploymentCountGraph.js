@@ -1,8 +1,11 @@
 import React from "react";
 import { ResponsiveLine } from '@nivo/line'
 import { FormattedDate } from "react-intl";
+import { useMediaQueryContext } from "../../context/MediaQueryProvider";
 
 export default function ActiveDeploymentCountGraph(props) {
+    const mediaQuery = useMediaQueryContext();
+
     const graphData = props.data ? [
         {
             "id": "activeDeploymentCount",
@@ -43,7 +46,7 @@ export default function ActiveDeploymentCountGraph(props) {
 
     return (
 
-        <div style={{ height: "400px" }}>
+        <div style={{ height: "400px", maxWidth: "800px", margin: "auto" }}>
             {props.data && (
                 <ResponsiveLine
                     theme={theme}
@@ -53,7 +56,7 @@ export default function ActiveDeploymentCountGraph(props) {
                     xScale={{ type: 'point' }}
                     yScale={{ type: 'linear', min: 0, max: maxValue + 5 }}
                     yFormat=" >-1d"
-                    axisBottom={{ format: (dateStr) => <FormattedDate value={new Date(dateStr)} day="numeric" month="long" timeZone="UTC" /> }}
+                    axisBottom={{ tickRotation: mediaQuery.mobileView ? 45 : 0, format: (dateStr) => <FormattedDate value={new Date(dateStr)} day="numeric" month="long" timeZone="UTC" /> }}
                     axisTop={null}
                     axisRight={null}
                     colors={"#e41e13"}
@@ -61,7 +64,6 @@ export default function ActiveDeploymentCountGraph(props) {
                     pointBorderColor="#e41e13"
                     pointColor={"#ffffff"}
                     pointBorderWidth={3}
-                    pointBorderColor={{ from: 'serieColor' }}
                     pointLabelYOffset={-15}
                     enablePointLabel={false}
                     isInteractive={true}
