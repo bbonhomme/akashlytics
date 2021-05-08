@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress, Typography } from "@material-ui/core";
 import { useMediaQueryContext } from "../../context/MediaQueryProvider";
 import ActiveDeploymentCountGraph from "../ActiveDeploymentCountGraph/ActiveDeploymentCountGraph";
+import { Helmet } from "react-helmet";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -37,6 +38,8 @@ export function Home({ deploymentCounts }) {
   }
 
   return (
+    <>
+    <Helmet title="Dashboard" />
     <div className="container App-body">
       {deploymentCounts !== null ? (
         <>
@@ -234,16 +237,34 @@ export function Home({ deploymentCounts }) {
           )}
 
           {deploymentCounts.snapshots && deploymentCounts.snapshots.length > 0 && (
-            <div className="row justify-content-md-center mt-3">
-              <div className="col-lg-9">
-                <ActiveDeploymentCountGraph data={deploymentCounts.snapshots} />
+            <>
+              <div
+                className={clsx("row mt-5", {
+                  "mb-4": !mediaQuery.smallScreen,
+                  "mb-2 text-center": mediaQuery.smallScreen,
+                })}
+              >
+                <div className="col-xs-12">
+                  <Typography
+                    variant="h1"
+                    className={clsx(classes.title, { "text-center": mediaQuery.smallScreen })}
+                  >
+                    Active deployments over time
+                  </Typography>
+                </div>
               </div>
-            </div>
+              <div className="row justify-content-md-center mt-3">
+                <div className="col-lg-9">
+                  <ActiveDeploymentCountGraph data={deploymentCounts.snapshots} />
+                </div>
+              </div>
+            </>
           )}
         </>
       ) : (
         <CircularProgress size={80} />
       )}
     </div>
+    </>
   );
 }

@@ -5,6 +5,7 @@ import { copyTextToClipboard } from "../../utils/copyClipboard";
 import { IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
+import { Helmet } from "react-helmet";
 import { Header } from "../Header";
 import { Switch, Route } from "react-router-dom";
 import { Home } from "../Home";
@@ -56,6 +57,9 @@ function App() {
 
   return (
     <div className="App">
+
+      <Helmet defaultTitle="Akashlytics" titleTemplate="Akashlytics - %s" />
+
       <Header />
 
       <Switch>

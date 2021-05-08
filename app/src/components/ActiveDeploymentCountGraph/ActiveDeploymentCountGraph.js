@@ -48,6 +48,7 @@ export default function ActiveDeploymentCountGraph(props) {
                 <ResponsiveLine
                     theme={theme}
                     data={graphData}
+                    curve="linear"
                     margin={{ top: 50, right: 60, bottom: 50, left: 60 }}
                     xScale={{ type: 'point' }}
                     yScale={{ type: 'linear', min: 0, max: maxValue + 5 }}
@@ -66,6 +67,7 @@ export default function ActiveDeploymentCountGraph(props) {
                     isInteractive={true}
                     tooltip={props => <div className="graphTooltip">{props.point.data.y}</div>}
                     useMesh={true}
+                    enableCrosshair={false}
                 />
 
             )}

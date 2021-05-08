@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import { FormattedNumber, useIntl } from "react-intl";
+import { Helmet } from "react-helmet";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -95,6 +96,12 @@ export function PriceCompare({ marketData }) {
 
   return (
     <div className={clsx(classes.root, "container")}>
+      <Helmet title="Price comparison tool">
+        <meta
+          name="description"
+          content="Compare Akash cost savings against the cloud giants like AWS,GCP and	azure."
+        />
+      </Helmet>
       <div className="row">
         <div className="col-xs-12">
           <Typography variant="h3" className={classes.pageTitle}>
