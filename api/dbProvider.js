@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes, Op, Deferrable, DATEONLY } = require("sequelize");
 const { averageBlockTime } = require("./constants");
-const baseSnapshots = require("./data/activeDeploymentCountSnapshots.json");
+const baseSnapshots = require("./data/snapshotsBackup.json");
+const dataSnapshotsHandler = require("./dataSnapshotsHandler");
 
 const sequelize = new Sequelize("sqlite::memory:", {
   logging: false,
@@ -70,10 +71,18 @@ const Bid = sequelize.define('bid', {
   datetime: { type: DataTypes.DATE, allowNull: false }
 });
 
-const ActiveDeploymentCountSnapshot = sequelize.define('activeDeploymentCountSnapshot', {
+const StatsSnapshot = sequelize.define('statsSnapshot', {
   date: { type: DataTypes.STRING, allowNull: false },
-  min: { type: DataTypes.NUMBER, allowNull: false },
-  max: { type: DataTypes.NUMBER, allowNull: false },
+  minActiveDeploymentCount: { type: DataTypes.NUMBER, allowNull: true },
+  maxActiveDeploymentCount: { type: DataTypes.NUMBER, allowNull: true },
+  minCompute: { type: DataTypes.NUMBER, allowNull: true },
+  maxCompute: { type: DataTypes.NUMBER, allowNull: true },
+  minMemory: { type: DataTypes.NUMBER, allowNull: true },
+  maxMemory: { type: DataTypes.NUMBER, allowNull: true },
+  minStorage: { type: DataTypes.NUMBER, allowNull: true },
+  maxStorage: { type: DataTypes.NUMBER, allowNull: true },
+  allTimeDeploymentCount: { type: DataTypes.NUMBER, allowNull: true },
+  totalAktSpent: { type: DataTypes.NUMBER, allowNull: true },
 });
 
 exports.clearDatabase = async () => {
@@ -101,7 +110,7 @@ exports.init = async () => {
   await DeploymentGroup.sync({ force: true });
   await DeploymentGroupResource.sync({ force: true });
   await Bid.sync({ force: true });
-  await ActiveDeploymentCountSnapshot.sync();
+  await StatsSnapshot.sync();
 
   Deployment.hasMany(DeploymentGroup);
   DeploymentGroup.belongsTo(Deployment, { foreignKey: "deploymentId" });
@@ -290,25 +299,23 @@ exports.getTotalResourcesLeased = async () => {
   }
 }
 
-exports.updateDaySnapshot = async (date, dayMinActiveDeploymentCount, dayMaxActiveDeploymentCount) => {
+exports.updateDaySnapshot = async (date, snapshot) => {
   const dateStr = date.toISOString().split('T')[0];
 
   const existingSnapshot = await this.getSnapshot(date);
-  
+
+  const { date: unusedDate, ...stats } = snapshot;
+
   if (existingSnapshot) {
-    await ActiveDeploymentCountSnapshot.update({
-      min: dayMinActiveDeploymentCount,
-      max: dayMaxActiveDeploymentCount
-    }, {
+    await StatsSnapshot.update(stats, {
       where: {
         date: dateStr
       }
     });
   } else {
-    await ActiveDeploymentCountSnapshot.create({
+    await StatsSnapshot.create({
       date: dateStr,
-      min: dayMinActiveDeploymentCount,
-      max: dayMaxActiveDeploymentCount
+      ...stats
     });
   }
 }
@@ -316,23 +323,41 @@ exports.updateDaySnapshot = async (date, dayMinActiveDeploymentCount, dayMaxActi
 exports.getSnapshot = async (date) => {
   const dateStr = date.toISOString().split('T')[0];
 
-  return await ActiveDeploymentCountSnapshot.findOne({
+  return await StatsSnapshot.findOne({
     where: {
       date: dateStr
     }
   });
 }
 
+exports.getActiveDeploymentSnapshots = async () => {
+  const results = await StatsSnapshot.findAll({
+    attributes: ["date", "minActiveDeploymentCount", "maxActiveDeploymentCount"],
+    order: ["date"],
+    where: {
+      date: {
+        [Op.not]: dataSnapshotsHandler.getDayStr()
+      }
+    }
+  });
+
+  return results.map(x => x.toJSON()).map(x => ({
+    date: x.date,
+    min: x.minActiveDeploymentCount,
+    max: x.maxActiveDeploymentCount,
+    average: Math.round((x.minActiveDeploymentCount + x.maxActiveDeploymentCount) / 2)
+  }));
+};
+
 exports.getAllSnapshots = async () => {
-  const results = await ActiveDeploymentCountSnapshot.findAll({
-    attributes: ["date", "min", "max"],
+  const results = await StatsSnapshot.findAll({
     order: ["date"]
   });
 
-  return results.map(x => x.toJSON()).map(x => ({...x, average: Math.round((x.min+x.max)/2)}));
+  return results.map(x => x.toJSON());
 };
 
 exports.initSnapshotsFromFile = async () => {
   console.log("Loading " + baseSnapshots.length + " snapshots from file");
-  await ActiveDeploymentCountSnapshot.bulkCreate(baseSnapshots);
+  await StatsSnapshot.bulkCreate(baseSnapshots);
 };

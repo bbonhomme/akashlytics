@@ -89,7 +89,7 @@ exports.initialize = async (firstInit) => {
     if (firstInit) {
       await dbProvider.initSnapshotsFromFile();
     }
-    
+
     console.log(`Inserting ${deployments.length} deployments into the database`);
     for (const deployment of deployments) {
       await dbProvider.addDeployment(deployment);
@@ -110,9 +110,7 @@ exports.initialize = async (firstInit) => {
     console.log(`There is ${activeDeploymentCount} active deployments`);
     console.log(`There was ${deploymentCount} total deployments`);
 
-    await dataSnapshotsHandler.takeSnapshot(activeDeploymentCount);
-    
-    snapshots = await dbProvider.getAllSnapshots();
+    snapshots = await dbProvider.getActiveDeploymentSnapshots();
 
     totalAKTSpent = await dbProvider.getTotalAKTSpent();
     const roundedAKTSpent = Math.round((totalAKTSpent / 1000000 + Number.EPSILON) * 100) / 100;
@@ -128,6 +126,8 @@ exports.initialize = async (firstInit) => {
     const roundedPriceAkt = Math.round((averagePrice / 1000000 + Number.EPSILON) * 100) / 100;
 
     console.log(`That is ${roundedPriceAkt} AKT / month`);
+
+    await dataSnapshotsHandler.takeSnapshot(activeDeploymentCount, totalResourcesLeased.cpuSum, totalResourcesLeased.memorySum, totalResourcesLeased.storageSum, deploymentCount, totalAKTSpent);
   } catch (err) {
     console.error("Could not initialize", err);
   } finally {

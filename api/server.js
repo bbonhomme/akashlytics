@@ -35,6 +35,12 @@ app.get("/api/getDeploymentCounts/", async (req, res) => {
   }
 });
 
+app.get("/api/getAllSnapshots", async (req, res) => {
+  const snapshots = await dbProvider.getAllSnapshots();
+
+  res.send(snapshots);
+});
+
 app.get("/api/refreshData", async (req, res) => {
   const refreshed = await blockchainAnalyzer.refreshData();
 
@@ -53,7 +59,7 @@ app.listen(PORT, () => {
   console.log(`Server listening on the port::${PORT}`);
 });
 
-async function InitApp(){
+async function InitApp() {
   await blockchainAnalyzer.initialize(true);
   blockchainAnalyzer.startAutoRefresh();
   marketDataProvider.syncAtInterval();

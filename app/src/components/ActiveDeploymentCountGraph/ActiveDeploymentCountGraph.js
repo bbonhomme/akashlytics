@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ResponsiveLine } from '@nivo/line'
 import { FormattedDate } from "react-intl";
 
@@ -39,7 +39,7 @@ export default function ActiveDeploymentCountGraph(props) {
         }
     };
 
-    const maxValue =  props.data && props.data.map(x => x.max).reduce((a, b) => a > b ? a : b);
+    const maxValue = props.data && props.data.map(x => x.max).reduce((a, b) => a > b ? a : b);
 
     return (
 
@@ -53,7 +53,7 @@ export default function ActiveDeploymentCountGraph(props) {
                     xScale={{ type: 'point' }}
                     yScale={{ type: 'linear', min: 0, max: maxValue + 5 }}
                     yFormat=" >-1d"
-                    axisBottom={{format:(dateStr) => <FormattedDate value={new Date(dateStr)} day="numeric" month="long" />}}
+                    axisBottom={{ format: (dateStr) => <FormattedDate value={new Date(dateStr)} day="numeric" month="long" timeZone="UTC" /> }}
                     axisTop={null}
                     axisRight={null}
                     colors={"#e41e13"}
@@ -69,7 +69,6 @@ export default function ActiveDeploymentCountGraph(props) {
                     useMesh={true}
                     enableCrosshair={false}
                 />
-
             )}
         </div>
     );
