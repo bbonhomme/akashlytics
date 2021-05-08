@@ -5,7 +5,7 @@ import { FormattedNumber } from "react-intl";
 import { makeStyles } from "@material-ui/core/styles";
 import { CircularProgress, Typography } from "@material-ui/core";
 import { useMediaQueryContext } from "../../context/MediaQueryProvider";
-import ActiveDeploymentCountGraph from "../ActiveDeploymentCountGraph/ActiveDeploymentCountGraph";
+import { ActiveDeploymentCountGraph } from "../ActiveDeploymentCountGraph";
 import { Helmet } from "react-helmet-async";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,8 +17,26 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "left",
     borderBottom: "1px solid rgba(255,255,255,0.1)",
   },
+  monthlyAkt: {
+    fontWeight: "bold",
+    fontSize: 12,
+    display: "block",
+    marginTop: "-10px",
+  },
+  tooltipIcon: {
+    position: "absolute",
+    top: 5,
+    left: 10,
+    fontSize: "1.2rem"
+  },
   tooltip: {
     maxWidth: 300,
+  },
+  graphExplanation: {
+    fontSize: ".8rem",
+    paddingTop: "1rem",
+    fontStyle: "italic",
+    fontSize: "1.1rem",
   },
 }));
 
@@ -55,7 +73,7 @@ export function Home({ deploymentCounts }) {
                   className={clsx(classes.title, { "text-center": mediaQuery.smallScreen })}
                 >
                   Network summary
-              </Typography>
+                </Typography>
               </div>
             </div>
 
@@ -84,22 +102,17 @@ export function Home({ deploymentCounts }) {
                         currency="USD"
                         value={0.432 * deploymentCounts.marketData.computedPrice}
                       />
-                      <small
-                        style={{
-                          fontWeight: "bold",
-                          fontSize: 12,
-                          display: "block",
-                          marginTop: "-10px",
-                        }}
-                      >
-                        (.432akt)
-                    </small>
                     </p>
 
-                    <p className="Text">
-                      Monthly cost for a small instance{" "}
-                      <i className="bi bi-question-circle-fill" data-tip data-for="instanceDef"></i>
-                    </p>
+                    <p className="Text">Monthly cost for a small instance</p>
+
+                    <small className={classes.monthlyAkt}>0.432akt/month</small>
+
+                    <i
+                      className={clsx("bi bi-question-circle-fill", classes.tooltipIcon)}
+                      data-tip
+                      data-for="instanceDef"
+                    />
                     <ReactTooltip
                       className="tooltip"
                       id="instanceDef"
@@ -108,13 +121,13 @@ export function Home({ deploymentCounts }) {
                       effect="solid"
                     >
                       Average based on these specs:
-                    <br />
-                    cpu: 0.1
-                    <br />
-                    memory: 512Mi
-                    <br />
-                    storage: 512Mi
-                  </ReactTooltip>
+                      <br />
+                      cpu: 0.1
+                      <br />
+                      memory: 512Mi
+                      <br />
+                      storage: 512Mi
+                    </ReactTooltip>
                   </div>
                 </div>
               )}
@@ -126,8 +139,8 @@ export function Home({ deploymentCounts }) {
                       value={deploymentCounts.totalAKTSpent / 1000000}
                       maximumFractionDigits={0}
                     />{" "}
-                  akt
-                </p>
+                    akt
+                  </p>
                   <p className="Text">Total spent on decloud</p>
                 </div>
               </div>
@@ -137,14 +150,13 @@ export function Home({ deploymentCounts }) {
                   <p className="Number">
                     <FormattedNumber value={deploymentCounts.deploymentCount} />
                   </p>
-                  <p className="Text">
-                    All-time deployment count&nbsp;
+                  <p className="Text">All-time deployment count</p>
+
                   <i
-                      className="bi bi-question-circle-fill"
-                      data-tip
-                      data-for="totalDeploymentsInfo"
-                    ></i>
-                  </p>
+                    className={clsx("bi bi-question-circle-fill", classes.tooltipIcon)}
+                    data-tip
+                    data-for="totalDeploymentsInfo"
+                  />
                   <ReactTooltip
                     className={clsx("tooltip", classes.tooltip)}
                     id="totalDeploymentsInfo"
@@ -153,9 +165,9 @@ export function Home({ deploymentCounts }) {
                     effect="solid"
                   >
                     The all-time deployment count consists of all deployments that were live at some
-                    point. This includes deployments that were deployed for testing or that were meant
-                    to be only temporary.
-                </ReactTooltip>
+                    point. This includes deployments that were deployed for testing or that were
+                    meant to be only temporary.
+                  </ReactTooltip>
                 </div>
               </div>
             </div>
@@ -174,7 +186,7 @@ export function Home({ deploymentCounts }) {
                       className={clsx(classes.title, { "text-center": mediaQuery.smallScreen })}
                     >
                       Total resources currently leased
-                  </Typography>
+                    </Typography>
                   </div>
                 </div>
                 <div className="row">
@@ -197,7 +209,7 @@ export function Home({ deploymentCounts }) {
                         />
                         <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
                           vCPUs
-                      </small>
+                        </small>
                       </p>
                       <p className="Text">Compute</p>
                     </div>
@@ -207,11 +219,13 @@ export function Home({ deploymentCounts }) {
                     <div className="Card">
                       <p className="Number">
                         <FormattedNumber
-                          value={deploymentCounts.totalResourcesLeased.memorySum / 1024 / 1024 / 1024}
+                          value={
+                            deploymentCounts.totalResourcesLeased.memorySum / 1024 / 1024 / 1024
+                          }
                         />
                         <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
                           Gi
-                      </small>
+                        </small>
                       </p>
                       <p className="Text">Memory</p>
                     </div>
@@ -227,7 +241,7 @@ export function Home({ deploymentCounts }) {
                         />
                         <small style={{ paddingLeft: "5px", fontWeight: "bold", fontSize: 16 }}>
                           Gi
-                      </small>
+                        </small>
                       </p>
                       <p className="Text">Storage</p>
                     </div>
@@ -249,7 +263,7 @@ export function Home({ deploymentCounts }) {
                       variant="h1"
                       className={clsx(classes.title, { "text-center": mediaQuery.smallScreen })}
                     >
-                      Active deployments over time
+                      Daily active deployments
                     </Typography>
                   </div>
                 </div>
@@ -260,7 +274,10 @@ export function Home({ deploymentCounts }) {
                 </div>
                 <div className="row">
                   <div className="col-lg-12">
-                    <em className="text-white">* The data points represent the average between the minimum and maximum active deployment count for the day.</em>
+                    <p className={clsx("text-white", classes.graphExplanation)}>
+                      * The data points represent the average between the minimum and maximum active
+                      deployment count for the day.
+                    </p>
                   </div>
                 </div>
               </>

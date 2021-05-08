@@ -59,8 +59,7 @@
 }
 
 .Card {
-  /* background-color: #e41e13; */
-  /* //#af1817 */
+  position: relative;
   background: rgb(175, 24, 23);
   background: linear-gradient(
     90deg,
@@ -140,7 +139,7 @@ a:hover {
   transform: scale(1.05);
 }
 
-.graphTooltip{
+.graphTooltip {
   padding: 5px;
   color: white;
   font-weight: bold;

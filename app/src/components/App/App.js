@@ -57,7 +57,6 @@ function App() {
 
   return (
     <div className="App">
-
       <Helmet defaultTitle="Akashlytics" titleTemplate="Akashlytics - %s" />
 
       <Header />
@@ -78,6 +77,7 @@ function App() {
           style={{ marginBottom: 50 }}
           alt="Powered by Akash logo"
         />
+        <p className="text-white mb-5">(Yes, hosted on akash!)</p>
 
         <p className="text-on-black">
           Akashlytics is developed to help the community have a better insight on its decentralized

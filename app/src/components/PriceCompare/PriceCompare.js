@@ -96,10 +96,10 @@ export function PriceCompare({ marketData }) {
 
   return (
     <div className={clsx(classes.root, "container")}>
-      <Helmet title="Price comparison tool">
+      <Helmet title="Price comparison">
         <meta
           name="description"
-          content="Compare Akash cost savings against the cloud giants like AWS,GCP and	azure."
+          content="Compare Akash cost savings against the cloud giants like Amazon Web Services (aws), Google Cloud Platform (gcp) and Microsoft Azure."
         />
       </Helmet>
       <div className="row">
