@@ -2,6 +2,7 @@ const fetch = require("node-fetch");
 const dbProvider = require("./dbProvider");
 const fs = require("fs");
 const { mainNet, averageBlockTime } = require("./constants");
+const dataSnapshotsHandler = require("./dataSnapshotsHandler");
 
 const currentNet = mainNet;
 
@@ -17,6 +18,7 @@ let activeDeploymentCount = null;
 let averagePrice = null;
 let totalAKTSpent = null;
 let totalResourcesLeased = null;
+let snapshots = null;
 
 let lastRefreshDate = null;
 let isLoadingData = false;
@@ -27,6 +29,7 @@ exports.getAveragePrice = () => averagePrice;
 exports.getTotalResourcesLeased = () => totalResourcesLeased;
 exports.getLastRefreshDate = () => lastRefreshDate;
 exports.getTotalAKTSpent = () => totalAKTSpent;
+exports.getSnapshots = () => snapshots;
 
 exports.startAutoRefresh = () => {
   console.log(`Will auto-refresh at an interval of ${Math.round(autoRefreshInterval / 1000)} secs`);
@@ -63,7 +66,7 @@ exports.refreshData = async () => {
   return true;
 };
 
-exports.initialize = async () => {
+exports.initialize = async (firstInit) => {
   isLoadingData = true;
   try {
     if (!fs.existsSync(cacheFolder)) {
@@ -82,6 +85,10 @@ exports.initialize = async () => {
     lastRefreshDate = new Date();
 
     await dbProvider.init();
+
+    if (firstInit) {
+      await dbProvider.initSnapshotsFromFile();
+    }
 
     console.log(`Inserting ${deployments.length} deployments into the database`);
     for (const deployment of deployments) {
@@ -103,10 +110,12 @@ exports.initialize = async () => {
     console.log(`There is ${activeDeploymentCount} active deployments`);
     console.log(`There was ${deploymentCount} total deployments`);
 
+    snapshots = await dbProvider.getActiveDeploymentSnapshots();
+
     totalAKTSpent = await dbProvider.getTotalAKTSpent();
     const roundedAKTSpent = Math.round((totalAKTSpent / 1000000 + Number.EPSILON) * 100) / 100;
     console.log(`There was ${roundedAKTSpent} akt spent on cloud resources`);
-    
+
     totalResourcesLeased = await dbProvider.getTotalResourcesLeased();
     console.log(`Total resources leased: ${totalResourcesLeased.cpuSum} cpu / ${totalResourcesLeased.memorySum} memory / ${totalResourcesLeased.storageSum} storage`);
 
@@ -117,6 +126,8 @@ exports.initialize = async () => {
     const roundedPriceAkt = Math.round((averagePrice / 1000000 + Number.EPSILON) * 100) / 100;
 
     console.log(`That is ${roundedPriceAkt} AKT / month`);
+
+    await dataSnapshotsHandler.takeSnapshot(activeDeploymentCount, totalResourcesLeased.cpuSum, totalResourcesLeased.memorySum, totalResourcesLeased.storageSum, deploymentCount, totalAKTSpent);
   } catch (err) {
     console.error("Could not initialize", err);
   } finally {
