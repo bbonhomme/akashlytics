@@ -80,7 +80,6 @@ export function PriceCompare({ marketData }) {
   const [priceComparisons, setPriceComparisons] = useState(null);
   const intl = useIntl();
 
-  // get the users
   useEffect(() => {
     async function getPriceCompare() {
       const res = await fetch("/data/price-comparisons.json");
@@ -222,7 +221,7 @@ export function PriceCompare({ marketData }) {
               <a
                 href="https://akash.network/blog/akash-mainnet-2-update-april-29-2021/"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className={classes.link}
               >
                 article.
@@ -236,7 +235,7 @@ export function PriceCompare({ marketData }) {
               <a
                 href="https://calculator.s3.amazonaws.com/index.html"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className={classes.link}
               >
                 Amazon Web Service pricing calculator
@@ -246,7 +245,7 @@ export function PriceCompare({ marketData }) {
               <a
                 href="https://cloud.google.com/products/calculator"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className={classes.link}
               >
                 Google cloud platform pricing calculator
@@ -256,7 +255,7 @@ export function PriceCompare({ marketData }) {
               <a
                 href="https://azure.microsoft.com/en-us/pricing/calculator/"
                 target="_blank"
-                rel="noopener noreferrer"
+                rel="noopener"
                 className={classes.link}
               >
                 Microsoft Azure pricing calculator

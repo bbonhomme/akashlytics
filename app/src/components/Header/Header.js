@@ -14,7 +14,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { useMediaQueryContext } from "../../context/MediaQueryProvider";
 import clsx from "clsx";
 import { NavDrawer } from "../NavDrawer";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,18 +63,22 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "uppercase",
     color: "white",
   },
+  navButton: {
+    borderRadius: "5px",
+  },
 }));
 
 const navLinks = [
   // { title: `about us`, path: `/about-us` },
   { title: `price compare`, path: `/price-compare` },
-  // { title: `faq`, path: `/faq` },
+  { title: `faq`, path: `/faq` },
 ];
 
 export function Header() {
   const classes = useStyles();
   const mediaQuery = useMediaQueryContext();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const location = useLocation();
 
   const toggleDrawer = (open) => (event) => {
     if (event && event.type === "keydown" && (event.key === "Tab" || event.key === "Shift")) {
@@ -134,7 +138,11 @@ export function Header() {
           >
             {navLinks.map(({ title, path }) => (
               <Link to={path} key={title} className={classes.linkText}>
-                <ListItem button>
+                <ListItem
+                  button
+                  selected={location.pathname === path}
+                  classes={{ root: classes.navButton }}
+                >
                   <ListItemText primary={title} />
                 </ListItem>
               </Link>

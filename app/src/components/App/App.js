@@ -10,12 +10,22 @@ import { Header } from "../Header";
 import { Switch, Route } from "react-router-dom";
 import { Home } from "../Home";
 import { PriceCompare } from "../PriceCompare";
+import { Faq } from "../Faq";
+import { makeStyles } from "@material-ui/core/styles";
 
 const donationAddress = "akash13265twfqejnma6cc93rw5dxk4cldyz2zyy8cdm";
+
+const useStyles = makeStyles((theme) => ({
+  link: {
+    fontWeight: "bold",
+    textDecoration: "underline",
+  },
+}));
 
 function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [deploymentCounts, setDeploymentCounts] = useState(null);
+  const classes = useStyles();
 
   // get the users
   useEffect(() => {
@@ -62,6 +72,9 @@ function App() {
       <Header />
 
       <Switch>
+        <Route path="/faq">
+          <Faq />
+        </Route>
         <Route path="/price-compare">
           <PriceCompare marketData={deploymentCounts && deploymentCounts.marketData} />
         </Route>
@@ -91,6 +104,13 @@ function App() {
           <span style={{ marginRight: 15 }}>{donationAddress}</span>
           <FileCopyIcon fontSize="small" />
         </div>
+
+        <p className="text-on-black">
+          If you have great ideas on how to improve this app, let me know!{" "}
+          <a className={classes.link} href="mailto:ideas@akashlytics.com">
+            ideas@akashlytics.com
+          </a>
+        </p>
       </footer>
     </div>
   );

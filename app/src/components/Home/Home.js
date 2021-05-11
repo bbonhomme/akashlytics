@@ -1,9 +1,8 @@
 import React from "react";
-import ReactTooltip from "react-tooltip";
 import clsx from "clsx";
 import { FormattedNumber } from "react-intl";
 import { makeStyles } from "@material-ui/core/styles";
-import { CircularProgress, Typography } from "@material-ui/core";
+import { CircularProgress, Typography, Tooltip } from "@material-ui/core";
 import { useMediaQueryContext } from "../../context/MediaQueryProvider";
 import { ActiveDeploymentCountGraph } from "../ActiveDeploymentCountGraph";
 import { Helmet } from "react-helmet-async";
@@ -26,11 +25,14 @@ const useStyles = makeStyles((theme) => ({
   tooltipIcon: {
     position: "absolute",
     top: 5,
-    left: 10,
-    fontSize: "1.2rem"
+    right: 10,
+    fontSize: "1.2rem",
   },
   tooltip: {
     maxWidth: 300,
+    fontSize: "1rem",
+    borderRadius: ".5rem",
+    fontWeight: "normal",
   },
   graphExplanation: {
     fontSize: ".8rem",
@@ -108,26 +110,22 @@ export function Home({ deploymentCounts }) {
 
                     <small className={classes.monthlyAkt}>0.432akt/month</small>
 
-                    <i
-                      className={clsx("bi bi-question-circle-fill", classes.tooltipIcon)}
-                      data-tip
-                      data-for="instanceDef"
-                    />
-                    <ReactTooltip
-                      className="tooltip"
-                      id="instanceDef"
-                      place="bottom"
-                      type="error"
-                      effect="solid"
+                    <Tooltip
+                      arrow
+                      enterTouchDelay={0}
+                      leaveTouchDelay={10000}
+                      classes={{ tooltip: classes.tooltip }}
+                      title={
+                        <>
+                          <div style={{ fontWeight: "lighter" }}>Based on these specs:</div>
+                          <div>CPU: 0.1</div>
+                          <div>RAM: 512Mi</div>
+                          <div>DISK: 512Mi</div>
+                        </>
+                      }
                     >
-                      Average based on these specs:
-                      <br />
-                      cpu: 0.1
-                      <br />
-                      memory: 512Mi
-                      <br />
-                      storage: 512Mi
-                    </ReactTooltip>
+                      <i className={clsx("bi bi-question-circle-fill", classes.tooltipIcon)} />
+                    </Tooltip>
                   </div>
                 </div>
               )}
@@ -142,6 +140,21 @@ export function Home({ deploymentCounts }) {
                     akt
                   </p>
                   <p className="Text">Total spent on decloud</p>
+
+                  <Tooltip
+                    arrow
+                    enterTouchDelay={0}
+                    leaveTouchDelay={10000}
+                    classes={{ tooltip: classes.tooltip }}
+                    title={
+                      <>
+                        This is the total amount akt spent to rent computing power on the akash
+                        network since the beginning of the network. (March 2021)
+                      </>
+                    }
+                  >
+                    <i className={clsx("bi bi-question-circle-fill", classes.tooltipIcon)} />
+                  </Tooltip>
                 </div>
               </div>
 
@@ -152,22 +165,21 @@ export function Home({ deploymentCounts }) {
                   </p>
                   <p className="Text">All-time deployment count</p>
 
-                  <i
-                    className={clsx("bi bi-question-circle-fill", classes.tooltipIcon)}
-                    data-tip
-                    data-for="totalDeploymentsInfo"
-                  />
-                  <ReactTooltip
-                    className={clsx("tooltip", classes.tooltip)}
-                    id="totalDeploymentsInfo"
-                    place="bottom"
-                    type="error"
-                    effect="solid"
+                  <Tooltip
+                    arrow
+                    enterTouchDelay={0}
+                    leaveTouchDelay={10000}
+                    classes={{ tooltip: classes.tooltip }}
+                    title={
+                      <>
+                        The all-time deployment count consists of all deployments that were live at
+                        some point. This includes deployments that were deployed for testing or that
+                        were meant to be only temporary.
+                      </>
+                    }
                   >
-                    The all-time deployment count consists of all deployments that were live at some
-                    point. This includes deployments that were deployed for testing or that were
-                    meant to be only temporary.
-                  </ReactTooltip>
+                    <i className={clsx("bi bi-question-circle-fill", classes.tooltipIcon)} />
+                  </Tooltip>
                 </div>
               </div>
             </div>
@@ -197,6 +209,27 @@ export function Home({ deploymentCounts }) {
                           <FormattedNumber value={deploymentCounts.activeDeploymentCount} />
                         </p>
                         <p className="Text">Active deployments</p>
+
+                        <Tooltip
+                          arrow
+                          enterTouchDelay={0}
+                          leaveTouchDelay={10000}
+                          classes={{ tooltip: classes.tooltip }}
+                          title={
+                            <>
+                              <div>
+                                This is number of deployments currently active on the network. A
+                                deployment can be anything.{" "}
+                              </div>
+                              <div>
+                                For example: a simple website to a blockchain node or a video game
+                                server.
+                              </div>
+                            </>
+                          }
+                        >
+                          <i className={clsx("bi bi-question-circle-fill", classes.tooltipIcon)} />
+                        </Tooltip>
                       </div>
                     </div>
                   )}
@@ -263,7 +296,7 @@ export function Home({ deploymentCounts }) {
                       variant="h1"
                       className={clsx(classes.title, { "text-center": mediaQuery.smallScreen })}
                     >
-                      Daily active deployments
+                      Average number of daily active deployments
                     </Typography>
                   </div>
                 </div>
