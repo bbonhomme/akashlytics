@@ -362,3 +362,13 @@ exports.initSnapshotsFromFile = async () => {
   console.log("Loading " + baseSnapshots.length + " snapshots from file");
   await StatsSnapshot.bulkCreate(baseSnapshots);
 };
+
+exports.getDeploymentsByAddress = async (address) => {
+  const deployments = await Deployment.findAll({
+    where:{
+      owner: address
+    }
+  });
+
+  return deployments;
+};

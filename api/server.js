@@ -35,6 +35,12 @@ app.get("/api/getDeploymentCounts/", async (req, res) => {
   }
 });
 
+app.get("/api/getDeploymentsByAddress/:address", async (req, res) => {
+  const deployments = await dbProvider.getDeploymentsByAddress(req.params.address);
+
+  res.send(JSON.stringify(deployments));
+});
+
 app.get("/api/getAllSnapshots", async (req, res) => {
   const snapshots = await dbProvider.getAllSnapshots();
 

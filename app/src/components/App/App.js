@@ -11,6 +11,7 @@ import { Switch, Route } from "react-router-dom";
 import { Home } from "../Home";
 import { PriceCompare } from "../PriceCompare";
 import { Faq } from "../Faq";
+import { DeployTool} from "../DeployTool/DeployTool";
 import { makeStyles } from "@material-ui/core/styles";
 
 const donationAddress = "akash13265twfqejnma6cc93rw5dxk4cldyz2zyy8cdm";
@@ -77,6 +78,9 @@ function App() {
         </Route>
         <Route path="/price-compare">
           <PriceCompare marketData={deploymentCounts && deploymentCounts.marketData} />
+        </Route>
+        <Route path="/deploy">
+          <DeployTool /> 
         </Route>
         <Route path="/">
           <Home deploymentCounts={deploymentCounts} />
