@@ -1,14 +1,19 @@
-import { Field, Enum, Type } from "protobufjs";
+import { Field, Enum, Type, Root } from "protobufjs";
 
 // Deployments
+
 
 const DeploymentID = new Type("DeploymentID")
     .add(new Field("owner", 1, "string"))
     .add(new Field("dseq", 2, "uint64"));
 
+let root = new Root()
+    .define("test")
+    .add(DeploymentID);
+
 export const MsgCloseDeployment = new Type("MsgCloseDeployment")
     .add(new Field("id", 1, "DeploymentID"))
-    .add(DeploymentID);
+//.add(DeploymentID);
 
 const Coin = new Type("Coin")
     .add(new Field("denom", 1, "string"))
@@ -81,7 +86,7 @@ const GroupSpec = new Type("GroupSpec")
 
 export const MsgCreateDeployment = new Type("MsgCreateDeployment")
     .add(new Field("id", 1, "DeploymentID"))
-    .add(DeploymentID)
+    //.add(DeploymentID)
     .add(new Field("groups", 2, "GroupSpec", "repeated"))
     .add(GroupSpec)
     .add(new Field("version", 3, "bytes"))
@@ -102,3 +107,21 @@ export const MsgCreateCertificate = new Type("MsgCreateCertificate")
     .add(new Field("owner", 1, "string"))
     .add(new Field("cert", 2, "bytes"))
     .add(new Field("pubkey", 3, "bytes"));
+
+// Leases
+
+export const BidID = new Type("BidID")
+    .add(new Field("owner", 1, "string"))
+    .add(new Field("dseq", 2, "uint64"))
+    .add(new Field("gseq", 3, "uint32"))
+    .add(new Field("oseq", 4, "uint32"))
+    .add(new Field("provider", 5, "string"));
+
+export const MsgCreateLease = new Type("MsgCreateLease")
+    .add(new Field("bid_id", 1, "BidID"))
+    .add(BidID);
+
+    
+
+root.add(MsgCloseDeployment);
+root.add(MsgCreateDeployment);
