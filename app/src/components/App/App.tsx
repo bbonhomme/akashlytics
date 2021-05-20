@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function App() {
+export function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const [deploymentCounts, setDeploymentCounts] = useState(null);
   const classes = useStyles();
@@ -30,11 +30,15 @@ function App() {
   // get the users
   useEffect(() => {
     async function getDeploymentCounts() {
-      const res = await fetch("/api/getDeploymentCounts");
-      const data = await res.json();
+      try {
+        const res = await fetch("/api/getDeploymentCounts");
+        const data = await res.json();
 
-      if (data) {
-        setDeploymentCounts(data);
+        if (data) {
+          setDeploymentCounts(data);
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
 
@@ -115,5 +119,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
