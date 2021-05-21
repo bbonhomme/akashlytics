@@ -151,7 +151,11 @@ async function loadLeases(node) {
     leases = require(leasesCachePath);
     console.log("Loaded leases from cache");
   } else {
-    leases = await loadWithPagination(node + "/akash/market/v1beta1/leases/list", "leases", paginationLimit);
+    leases = await loadWithPagination(
+      node + "/akash/market/v1beta1/leases/list",
+      "leases",
+      paginationLimit
+    );
     fs.writeFileSync(leasesCachePath, JSON.stringify(leases));
   }
 
@@ -167,7 +171,11 @@ async function loadDeployments(node) {
     deployments = require(deploymentsCachePath);
     console.log("Loaded deployments from cache");
   } else {
-    deployments = await loadWithPagination(node + "/akash/deployment/v1beta1/deployments/list", "deployments", paginationLimit);
+    deployments = await loadWithPagination(
+      node + "/akash/deployment/v1beta1/deployments/list",
+      "deployments",
+      paginationLimit
+    );
     fs.writeFileSync(deploymentsCachePath, JSON.stringify(deployments));
   }
 
@@ -183,7 +191,11 @@ async function loadBids(node) {
     bids = require(bidsCachePath);
     console.log("Loaded bids from cache");
   } else {
-    bids = await loadWithPagination(node + "/akash/market/v1beta1/bids/list", "bids", paginationLimit);
+    bids = await loadWithPagination(
+      node + "/akash/market/v1beta1/bids/list",
+      "bids",
+      paginationLimit
+    );
     fs.writeFileSync(bidsCachePath, JSON.stringify(bids));
   }
 
@@ -230,7 +242,7 @@ async function loadWithPagination(baseUrl, dataKey, limit) {
   do {
     let queryUrl = baseUrl + "?pagination.limit=" + limit + "&pagination.count_total=true";
     if (nextKey) {
-      queryUrl += "&pagination.key=" + nextKey;
+      queryUrl += "&pagination.key=" + encodeURIComponent(nextKey);
     }
     console.log(`Querying ${dataKey} [${callCount}] from : ${queryUrl}`);
     const response = await fetch(queryUrl);
@@ -245,7 +257,7 @@ async function loadWithPagination(baseUrl, dataKey, limit) {
     callCount++;
 
     console.log(`Got ${items.length} of ${totalCount}`);
-  } while (nextKey)
+  } while (nextKey);
 
   return items;
 }
