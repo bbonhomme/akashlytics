@@ -1,7 +1,7 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
-import { copyTextToClipboard } from "../../utils/copyClipboard";
+import { copyTextToClipboard } from "../../shared/utils/copyClipboard";
 import { IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
@@ -12,6 +12,10 @@ import { Home } from "../Home";
 import { PriceCompare } from "../PriceCompare";
 import { Faq } from "../Faq";
 import { makeStyles } from "@material-ui/core/styles";
+import { Graph } from "../Graph";
+import { useMediaQueryContext } from "@src/context/MediaQueryProvider";
+import clsx from "clsx";
+import { useDashboardData } from "@src/hooks/queries/useDashboardData";
 
 const donationAddress = "akash13265twfqejnma6cc93rw5dxk4cldyz2zyy8cdm";
 
@@ -20,30 +24,25 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     textDecoration: "underline",
   },
+  appBody: {
+    paddingTop: 80,
+    paddingBottom: 100,
+  },
+  appBodySmall: {
+    paddingTop: 25,
+    paddingBottom: 50,
+  },
+  snackbarButton: {
+    color: "white",
+  },
 }));
 
 export function App() {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
-  const [deploymentCounts, setDeploymentCounts] = useState(null);
+  const { data: deploymentCounts, status } = useDashboardData();
+
+  const mediaQuery = useMediaQueryContext();
   const classes = useStyles();
-
-  // get the users
-  useEffect(() => {
-    async function getDeploymentCounts() {
-      try {
-        const res = await fetch("/api/getDeploymentCounts");
-        const data = await res.json();
-
-        if (data) {
-          setDeploymentCounts(data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-
-    getDeploymentCounts();
-  }, []);
 
   const onDonationClick = () => {
     copyTextToClipboard(donationAddress);
@@ -54,7 +53,7 @@ export function App() {
           onClick={() => {
             closeSnackbar(key);
           }}
-          style={{ color: "white" }}
+          className={classes.snackbarButton}
         >
           <CloseIcon />
         </IconButton>
@@ -70,22 +69,27 @@ export function App() {
   };
 
   return (
-    <div className="App">
+    <div>
       <Helmet defaultTitle="Akashlytics" titleTemplate="Akashlytics - %s" />
 
       <Header />
 
-      <Switch>
-        <Route path="/faq">
-          <Faq />
-        </Route>
-        <Route path="/price-compare">
-          <PriceCompare marketData={deploymentCounts && deploymentCounts.marketData} />
-        </Route>
-        <Route path="/">
-          <Home deploymentCounts={deploymentCounts} />
-        </Route>
-      </Switch>
+      <div className={clsx(classes.appBody, { [classes.appBodySmall]: mediaQuery.smallScreen })}>
+        <Switch>
+          <Route path="/faq">
+            <Faq />
+          </Route>
+          <Route path="/price-compare">
+            <PriceCompare marketData={deploymentCounts && deploymentCounts.marketData} />
+          </Route>
+          <Route path="/graph/:snapshot">
+            <Graph />
+          </Route>
+          <Route path="/">
+            <Home deploymentCounts={deploymentCounts} />
+          </Route>
+        </Switch>
+      </div>
 
       <footer className="App-footer container">
         <img
@@ -114,6 +118,10 @@ export function App() {
           <a className={classes.link} href="mailto:ideas@akashlytics.com">
             ideas@akashlytics.com
           </a>
+        </p>
+
+        <p className="text-on-black mt-5">
+          <small>Version: {process.env.PACKAGE_VERSION}</small>
         </p>
       </footer>
     </div>

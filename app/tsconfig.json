@@ -17,10 +17,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "baseUrl": "./src",
+    "baseUrl": "./",
     "paths": {
-      "@src/*": ["*"],
-      "@app/*": ["app/*"]
+      "@src/*": ["src/*"],
+      "@app/*": ["*"]
     }
   },
   "include": ["src/**/*"],
